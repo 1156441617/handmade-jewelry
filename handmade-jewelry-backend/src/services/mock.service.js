@@ -1,0 +1,337 @@
+// 模拟数据服务 - 用于无数据库模式
+const mockData = {
+  products: [
+    {
+      id: '1',
+      sku: 'RJ-001',
+      name: '月光石编织戒指',
+      price: 168.00,
+      originalPrice: 268.00,
+      stock: 50,
+      category: 'rings',
+      mainImage: '💍',
+      images: ['💍', '✨', '💎', '🌟'],
+      description: '采用天然月光石，手工编织设计，每一颗宝石都经过精心挑选。独特的纹理和光泽，展现出优雅的气质。',
+      material: '925银 + 天然月光石',
+      size: '可调节',
+      weight: '3.5g',
+      rating: 4.9,
+      reviewCount: 128,
+      badges: ['new', 'hot'],
+      status: 'active',
+      createdAt: '2026-05-20T10:00:00Z'
+    },
+    {
+      id: '2',
+      sku: 'NK-001',
+      name: '珍珠吊坠项链',
+      price: 288.00,
+      originalPrice: 388.00,
+      stock: 30,
+      category: 'necklaces',
+      mainImage: '📿',
+      images: ['📿', '✨', '💎'],
+      description: '精选淡水珍珠，搭配925银链，简约而不失优雅。适合各种场合佩戴。',
+      material: '925银 + 淡水珍珠',
+      size: '45cm',
+      weight: '5.2g',
+      rating: 4.8,
+      reviewCount: 96,
+      badges: ['hot'],
+      status: 'active',
+      createdAt: '2026-05-18T10:00:00Z'
+    },
+    {
+      id: '3',
+      sku: 'ER-001',
+      name: '水晶耳环',
+      price: 198.00,
+      originalPrice: null,
+      stock: 40,
+      category: 'earrings',
+      mainImage: '✨',
+      images: ['✨', '💎', '🌟'],
+      description: '施华洛世奇水晶，精致切割，闪耀夺目。轻盈舒适，长时间佩戴不累。',
+      material: '925银 + 施华洛世奇水晶',
+      size: '标准',
+      weight: '2.8g',
+      rating: 4.7,
+      reviewCount: 85,
+      badges: ['new'],
+      status: 'active',
+      createdAt: '2026-05-15T10:00:00Z'
+    },
+    {
+      id: '4',
+      sku: 'BR-001',
+      name: '红宝石手链',
+      price: 358.00,
+      originalPrice: 458.00,
+      stock: 20,
+      category: 'bracelets',
+      mainImage: '💎',
+      images: ['💎', '✨', '🌟'],
+      description: '天然红宝石，色泽鲜艳，寓意吉祥。手工制作，每一件都是独一无二的艺术品。',
+      material: '925银 + 天然红宝石',
+      size: '18cm',
+      weight: '6.5g',
+      rating: 4.9,
+      reviewCount: 64,
+      badges: ['limited'],
+      status: 'active',
+      createdAt: '2026-05-12T10:00:00Z'
+    },
+    {
+      id: '5',
+      sku: 'BJ-001',
+      name: '银质手镯',
+      price: 228.00,
+      originalPrice: null,
+      stock: 35,
+      category: 'bracelets',
+      mainImage: '⌚',
+      images: ['⌚', '✨'],
+      description: '复古工艺银镯，质感厚重，彰显品味。开口设计，佩戴方便。',
+      material: '925纯银',
+      size: '可调节',
+      weight: '15.0g',
+      rating: 4.6,
+      reviewCount: 52,
+      badges: [],
+      status: 'active',
+      createdAt: '2026-05-10T10:00:00Z'
+    },
+    {
+      id: '6',
+      sku: 'GS-001',
+      name: '情侣对戒礼盒',
+      price: 520.00,
+      originalPrice: 680.00,
+      stock: 15,
+      category: 'gift-sets',
+      mainImage: '🎁',
+      images: ['🎁', '💍', '✨'],
+      description: '精美礼盒包装，内含一对情侣对戒。寓意永恒的爱情，送礼首选。',
+      material: '925银 + 锆石',
+      size: '可调节',
+      weight: '8.0g',
+      rating: 5.0,
+      reviewCount: 42,
+      badges: ['hot', 'limited'],
+      status: 'active',
+      createdAt: '2026-05-08T10:00:00Z'
+    },
+    {
+      id: '7',
+      sku: 'NK-002',
+      name: '星空项链',
+      price: 268.00,
+      originalPrice: null,
+      stock: 25,
+      category: 'necklaces',
+      mainImage: '🌟',
+      images: ['🌟', '✨', '💎'],
+      description: '灵感来自浩瀚星空，镶嵌闪亮锆石。浪漫唯美，适合年轻女性。',
+      material: '925银 + 锆石',
+      size: '42cm',
+      weight: '4.5g',
+      rating: 4.8,
+      reviewCount: 73,
+      badges: ['new'],
+      status: 'active',
+      createdAt: '2026-05-05T10:00:00Z'
+    },
+    {
+      id: '8',
+      sku: 'ER-002',
+      name: '花朵耳钉',
+      price: 158.00,
+      originalPrice: 198.00,
+      stock: 45,
+      category: 'earrings',
+      mainImage: '🌸',
+      images: ['🌸', '✨'],
+      description: '立体花朵造型，栩栩如生。小巧精致，日常百搭。',
+      material: '925银 + 珐琅',
+      size: '标准',
+      weight: '2.2g',
+      rating: 4.7,
+      reviewCount: 58,
+      badges: [],
+      status: 'active',
+      createdAt: '2026-05-01T10:00:00Z'
+    }
+  ],
+
+  categories: [
+    { id: '1', name: '戒指', slug: 'rings', icon: '💍', count: 1 },
+    { id: '2', name: '耳环', slug: 'earrings', icon: '✨', count: 2 },
+    { id: '3', name: '项链', slug: 'necklaces', icon: '📿', count: 2 },
+    { id: '4', name: '手链', slug: 'bracelets', icon: '⌚', count: 2 },
+    { id: '5', name: '礼盒套装', slug: 'gift-sets', icon: '🎁', count: 1 }
+  ],
+
+  reviews: [
+    {
+      id: '1',
+      productId: '1',
+      userId: 'user1',
+      userName: '小***8',
+      rating: 5,
+      content: '非常漂亮的戒指，做工精致，月光石很有质感，包装也很精美，送人自用都很合适！',
+      images: ['💍', '✨'],
+      createdAt: '2026-05-20T10:30:00Z',
+      helpful: 28
+    },
+    {
+      id: '2',
+      productId: '1',
+      userId: 'user2',
+      userName: '阳***光',
+      rating: 5,
+      content: '质量很好，戴着很舒服，大小可以调节，非常满意的一次购物！',
+      images: [],
+      createdAt: '2026-05-18T15:20:00Z',
+      helpful: 15
+    },
+    {
+      id: '3',
+      productId: '1',
+      userId: 'user3',
+      userName: '梦***想',
+      rating: 4,
+      content: '整体不错，就是比想象中稍微小一点，但是很漂亮，很喜欢。',
+      images: ['💎'],
+      createdAt: '2026-05-15T09:15:00Z',
+      helpful: 8
+    }
+  ]
+};
+
+// 模拟延迟
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// 商品服务
+class MockProductService {
+  async getAll(params = {}) {
+    await delay(100); // 模拟网络延迟
+    
+    let products = [...mockData.products];
+    
+    // 分类筛选
+    if (params.category) {
+      products = products.filter(p => p.category === params.category);
+    }
+    
+    // 状态筛选
+    if (params.status) {
+      products = products.filter(p => p.status === params.status);
+    }
+    
+    // 标签筛选
+    if (params.badge) {
+      products = products.filter(p => p.badges && p.badges.includes(params.badge));
+    }
+    
+    // 价格筛选
+    if (params.minPrice) {
+      products = products.filter(p => p.price >= parseFloat(params.minPrice));
+    }
+    if (params.maxPrice) {
+      products = products.filter(p => p.price <= parseFloat(params.maxPrice));
+    }
+    
+    // 搜索
+    if (params.search) {
+      const keyword = params.search.toLowerCase();
+      products = products.filter(p => 
+        p.name.toLowerCase().includes(keyword) || 
+        p.description.toLowerCase().includes(keyword)
+      );
+    }
+    
+    // 排序
+    if (params.sort) {
+      switch(params.sort) {
+        case 'price_asc':
+          products.sort((a, b) => a.price - b.price);
+          break;
+        case 'price_desc':
+          products.sort((a, b) => b.price - a.price);
+          break;
+        case 'rating':
+          products.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'newest':
+          products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break;
+      }
+    }
+    
+    // 分页
+    const page = parseInt(params.page) || 1;
+    const limit = parseInt(params.limit) || 20;
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    
+    return {
+      success: true,
+      data: {
+        products: products.slice(start, end),
+        total: products.length,
+        page,
+        limit,
+        totalPages: Math.ceil(products.length / limit)
+      }
+    };
+  }
+
+  async getById(id) {
+    await delay(50);
+    
+    const product = mockData.products.find(p => p.id === id);
+    
+    if (!product) {
+      return {
+        success: false,
+        message: '商品不存在'
+      };
+    }
+    
+    return {
+      success: true,
+      data: product
+    };
+  }
+
+  async getCategories() {
+    await delay(50);
+    
+    return {
+      success: true,
+      data: mockData.categories
+    };
+  }
+
+  async getReviews(productId) {
+    await delay(50);
+    
+    const reviews = mockData.reviews.filter(r => r.productId === productId);
+    
+    return {
+      success: true,
+      data: {
+        reviews,
+        total: reviews.length,
+        averageRating: reviews.length > 0 
+          ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+          : 0
+      }
+    };
+  }
+}
+
+module.exports = {
+  MockProductService,
+  mockData
+};

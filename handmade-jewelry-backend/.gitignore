@@ -1,0 +1,33 @@
+# 依赖
+node_modules/
+
+# 环境配置
+.env
+
+# 日志
+logs/
+*.log
+npm-debug.log*
+
+# 上传文件
+uploads/
+temp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 测试
+coverage/
+.nyc_output/
+
+# 构建
+dist/
+build/

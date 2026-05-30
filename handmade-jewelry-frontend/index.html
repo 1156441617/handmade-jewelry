@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匠心手作 - 独一无二的手作珠宝</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">💎</span>
+                    <span class="logo-text">匠心手作</span>
+                </a>
+                
+                <nav class="nav-menu" id="navMenu">
+                    <a href="index.html" class="nav-item active">首页</a>
+                    <a href="#new-arrivals" class="nav-item">新品上市</a>
+                    <a href="#products" class="nav-item">全部商品</a>
+                    <a href="#categories" class="nav-item">分类</a>
+                    <a href="profile.html" class="nav-item">我的</a>
+                </nav>
+                
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="搜索商品..." id="searchInput">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                    <a href="cart.html" class="cart-icon">
+                        🛒
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </a>
+                    <button class="user-btn" onclick="showLoginModal()">👤</button>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero区域 -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">独一无二的手作珠宝</h1>
+            <p class="hero-subtitle">每一件作品都蕴含匠人的心血与灵感<br>为你的日常增添独特光彩</p>
+            <a href="#products" class="hero-cta">探索系列 →</a>
+        </div>
+    </section>
+
+    <!-- 分类展示 -->
+    <section class="categories" id="categories">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">精选分类</h2>
+                <a href="#" class="view-all">查看全部 ></a>
+            </div>
+            <div class="category-grid" id="categoryGrid">
+                <!-- 动态加载分类 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 热门推荐 -->
+    <section class="products-section" id="products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">热门推荐</h2>
+                <a href="#" class="view-all">更多商品 ></a>
+            </div>
+            
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="new">新品</button>
+                <button class="filter-btn" data-filter="hot">热销</button>
+                <button class="filter-btn" data-filter="limited">限量</button>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <!-- 动态加载商品 -->
+            </div>
+            
+            <div class="load-more">
+                <button class="btn-secondary" id="loadMoreBtn">加载更多</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI推荐 -->
+    <section class="section" style="padding: 60px 0; background: linear-gradient(135deg, #f5f0ff 0%, #e8f4f8 100%);">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-size: 28px; font-weight: 700; color: #333; margin-bottom: 10px;">AI智能推荐</h2>
+                <p style="color: #666; font-size: 15px;">基于您的浏览偏好，为您精选好物</p>
+            </div>
+            <div class="product-grid" id="aiRecommendGrid">
+                <!-- AI推荐商品动态加载 -->
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn-secondary" onclick="loadAIRecommendations()" style="padding: 12px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 14px;">刷新推荐</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特色服务 -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">原创设计</h3>
+                    <p class="feature-desc">每件作品都由独立设计师精心创作</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✋</div>
+                    <h3 class="feature-title">手工制作</h3>
+                    <p class="feature-desc">传统工艺与现代美学的完美结合</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3 class="feature-title">优质材料</h3>
+                    <p class="feature-desc">严选天然宝石和贵金属材质</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎁</div>
+                    <h3 class="feature-title">精美包装</h3>
+                    <p class="feature-desc">免费礼品包装,送礼更有心意</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">品牌故事</a></li>
+                        <li><a href="#">设计理念</a></li>
+                        <li><a href="#">工艺流程</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>客户服务</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">配送说明</a></li>
+                        <li><a href="#">退换政策</a></li>
+                        <li><a href="#">尺寸指南</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>关注我们</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">抖音直播间</a></li>
+                        <li><a href="#">小红书</a></li>
+                        <li><a href="#">微信公众号</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系方式</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">在线客服</a></li>
+                        <li><a href="#">定制咨询</a></li>
+                        <li><a href="#">批发合作</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 匠心手作 Jewelry. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登录/注册弹窗 -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">登录</button>
+                <button class="auth-tab" data-tab="register">注册</button>
+            </div>
+            
+            <!-- 登录表单 -->
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">邮箱</label>
+                    <input type="email" class="form-input" placeholder="请输入邮箱" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" class="form-input" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">登录</button>
+                <div class="auth-switch" style="text-align: center; margin-top: 1rem; color: #666;">
+                    还没账号？<a href="#" onclick="switchAuthTab('register'); return false;" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">去注册</a>
+                </div>
+            </form>
+            
+            <!-- 注册表单 -->
+            <form class="auth-form hidden" id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" class="form-input" name="username" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">邮箱</label>
+                    <input type="email" class="form-input" name="email" placeholder="请输入邮箱" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" class="form-input" name="password" placeholder="至少6个字符" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">确认密码</label>
+                    <input type="password" class="form-input" name="confirmPassword" placeholder="再次输入密码" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">注册</button>
+                <div class="auth-switch" style="text-align: center; margin-top: 1rem; color: #666;">
+                    已有账号？<a href="#" onclick="switchAuthTab('login'); return false;" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">去登录</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

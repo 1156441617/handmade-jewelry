@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - 手作珠宝</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .product-gallery {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .main-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            margin-bottom: 20px;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+        }
+
+        .main-image:hover {
+            transform: scale(1.05);
+        }
+
+        .thumbnail-list {
+            display: flex;
+            gap: 10px;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail.active {
+            border-color: var(--primary-color);
+        }
+
+        .thumbnail:hover {
+            border-color: var(--primary-color);
+        }
+
+        .product-info {
+            padding: 20px 0;
+        }
+
+        .product-badges {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-new {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-hot {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-limited {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .product-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 2px;
+            color: #ffc107;
+            font-size: 18px;
+        }
+
+        .rating-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .product-price-section {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .current-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .original-price {
+            font-size: 18px;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: #ff4757;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stock-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #28a745;
+        }
+
+        .stock-status.low-stock {
+            color: #ff4757;
+        }
+
+        .product-description {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .description-text {
+            color: #666;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .specifications {
+            margin-bottom: 30px;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .spec-label {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .spec-value {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .variant-selector {
+            margin-bottom: 30px;
+        }
+
+        .variant-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .variant-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .variant-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .variant-btn.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .quantity-selector {
+            margin-bottom: 30px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            width: fit-content;
+        }
+
+        .qty-btn {
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            font-size: 20px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: var(--bg-light);
+        }
+
+        .qty-input {
+            width: 60px;
+            height: 45px;
+            border: none;
+            border-left: 2px solid #ddd;
+            border-right: 2px solid #ddd;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            padding: 16px 30px;
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-cart:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-buy-now {
+            flex: 2;
+            padding: 16px 30px;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-buy-now:hover {
+            background: #b8976a;
+            transform: translateY(-2px);
+        }
+
+        .wishlist-btn {
+            padding: 16px 20px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .wishlist-btn:hover {
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .wishlist-btn.active {
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .service-guarantee {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .service-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .service-icon {
+            font-size: 20px;
+        }
+
+        /* 评价区域 */
+        .reviews-section {
+            margin-top: 60px;
+            padding-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .reviews-summary {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .average-rating {
+            font-size: 48px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .rating-bars {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: #ffc107;
+            border-radius: 4px;
+        }
+
+        .review-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .reviewer-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .review-date {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .review-content {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .review-images {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .review-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d4c0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .review-helpful {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .helpful-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .helpful-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* 相关推荐 */
+        .related-section {
+            margin-top: 60px;
+            padding-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .product-gallery {
+                position: static;
+            }
+
+            .product-title {
+                font-size: 24px;
+            }
+
+            .current-price {
+                font-size: 28px;
+            }
+
+            .spec-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-list {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .related-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reviews-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">手作珠宝</a>
+                <div class="nav-links">
+                    <a href="index.html#products">全部商品</a>
+                    <a href="index.html#categories">分类</a>
+                    <a href="index.html#features">特色服务</a>
+                    <a href="#about">关于我们</a>
+                </div>
+                <div class="nav-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="搜索商品..." id="searchInput">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                    <a href="cart.html" class="cart-icon">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                    <button class="user-btn" onclick="showLoginModal()">👤</button>
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 面包屑导航 -->
+    <div class="product-detail-container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a> / 
+            <a href="index.html#products">商品列表</a> / 
+            <span id="breadcrumbProduct">商品详情</span>
+        </div>
+
+        <!-- 商品详情网格 -->
+        <div class="detail-grid">
+            <!-- 左侧：商品图片 -->
+            <div class="product-gallery">
+                <div class="main-image" id="mainImage">💍</div>
+                <div class="thumbnail-list" id="thumbnailList">
+                    <div class="thumbnail active" onclick="changeImage('💍')">💍</div>
+                    <div class="thumbnail" onclick="changeImage('✨')">✨</div>
+                    <div class="thumbnail" onclick="changeImage('💎')">💎</div>
+                    <div class="thumbnail" onclick="changeImage('🌟')">🌟</div>
+                </div>
+            </div>
+
+            <!-- 右侧：商品信息 -->
+            <div class="product-info">
+                <div class="product-badges" id="productBadges">
+                    <span class="badge badge-new">新品</span>
+                    <span class="badge badge-hot">热销</span>
+                </div>
+
+                <h1 class="product-title" id="productTitle">月光石编织戒指</h1>
+
+                <div class="product-rating">
+                    <div class="stars" id="productStars">★★★★★</div>
+                    <span class="rating-text" id="ratingText">4.9分 | 128条评价</span>
+                </div>
+
+                <div class="product-price-section">
+                    <div class="price-row">
+                        <span class="current-price" id="currentPrice">¥168</span>
+                        <span class="original-price" id="originalPrice">¥268</span>
+                        <span class="discount-badge">6.3折</span>
+                    </div>
+                    <div class="stock-status" id="stockStatus">
+                        ✓ 有货
+                    </div>
+                </div>
+
+                <div class="product-description">
+                    <h3 class="section-title">商品描述</h3>
+                    <p class="description-text" id="productDescription">
+                        采用天然月光石，手工编织设计，每一颗宝石都经过精心挑选。独特的纹理和光泽，展现出优雅的气质。适合日常佩戴或作为礼物赠送。
+                    </p>
+                </div>
+
+                <div class="specifications">
+                    <h3 class="section-title">商品规格</h3>
+                    <div class="spec-grid" id="specGrid">
+                        <div class="spec-item">
+                            <span class="spec-label">材质</span>
+                            <span class="spec-value">925银 + 天然月光石</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">尺寸</span>
+                            <span class="spec-value">可调节</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">重量</span>
+                            <span class="spec-value">约3.5g</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">工艺</span>
+                            <span class="spec-value">手工编织</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="variant-selector">
+                    <h3 class="section-title">选择款式</h3>
+                    <div class="variant-options" id="variantOptions">
+                        <button class="variant-btn active" onclick="selectVariant(this)">经典款</button>
+                        <button class="variant-btn" onclick="selectVariant(this)">简约款</button>
+                        <button class="variant-btn" onclick="selectVariant(this)">奢华款</button>
+                    </div>
+                </div>
+
+                <div class="quantity-selector">
+                    <h3 class="section-title">购买数量</h3>
+                    <div class="quantity-control">
+                        <button class="qty-btn" onclick="changeQuantity(-1)">-</button>
+                        <input type="number" class="qty-input" id="quantityInput" value="1" min="1" max="99">
+                        <button class="qty-btn" onclick="changeQuantity(1)">+</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-add-cart" onclick="addToCartFromDetail()">加入购物车</button>
+                    <button class="btn-buy-now" onclick="buyNow()">立即购买</button>
+                    <button class="wishlist-btn" id="wishlistBtn" onclick="toggleWishlistFromDetail()">♡</button>
+                </div>
+
+                <div class="service-guarantee">
+                    <div class="service-list">
+                        <div class="service-item">
+                            <span class="service-icon">✓</span>
+                            <span>7天无理由退换</span>
+                        </div>
+                        <div class="service-item">
+                            <span class="service-icon">✓</span>
+                            <span>正品保证</span>
+                        </div>
+                        <div class="service-item">
+                            <span class="service-icon">✓</span>
+                            <span>全国包邮</span>
+                        </div>
+                        <div class="service-item">
+                            <span class="service-icon">✓</span>
+                            <span>终身保养</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户评价 -->
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <h2 class="section-title">用户评价</h2>
+                <div class="reviews-summary">
+                    <div class="average-rating" id="avgRating">4.9</div>
+                    <div>
+                        <div class="stars">★★★★★</div>
+                        <div class="rating-text">基于128条评价</div>
+                    </div>
+                    <div class="rating-bars">
+                        <div class="rating-bar">
+                            <span>5星</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 85%"></div></div>
+                            <span>85%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span>4星</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div>
+                            <span>10%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span>3星</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 3%"></div></div>
+                            <span>3%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span>2星</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 1%"></div></div>
+                            <span>1%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span>1星</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 1%"></div></div>
+                            <span>1%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reviewsList">
+                <!-- 评价卡片将通过JS动态加载 -->
+            </div>
+        </div>
+
+        <!-- 相关推荐 -->
+        <div class="related-section">
+            <h2 class="section-title">相关推荐</h2>
+            <div class="related-grid" id="relatedGrid">
+                <!-- 推荐商品将通过JS动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <ul>
+                        <li><a href="#">品牌故事</a></li>
+                        <li><a href="#">设计理念</a></li>
+                        <li><a href="#">工艺流程</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>客户服务</h3>
+                    <ul>
+                        <li><a href="#">配送说明</a></li>
+                        <li><a href="#">退换货政策</a></li>
+                        <li><a href="#">常见问题</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>关注我们</h3>
+                    <ul>
+                        <li><a href="#">微信公众号</a></li>
+                        <li><a href="#">小红书</a></li>
+                        <li><a href="#">抖音</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li>客服微信: jewelry_handmade</li>
+                        <li>邮箱: contact@handmade.com</li>
+                        <li>电话: 400-888-8888</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 手作珠宝. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // 商品详情页专用逻辑
+        let currentProductId = null;
+        let currentQuantity = 1;
+        let currentVariant = '经典款';
+
+        // 从URL获取商品ID
+        function getProductIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // 初始化页面
+        async function initProductDetail() {
+            currentProductId = getProductIdFromUrl();
+            
+            if (!currentProductId) {
+                // 如果没有商品ID，使用默认商品
+                currentProductId = '1';
+            }
+
+            await loadProductDetail(currentProductId);
+            loadReviews();
+            loadRelatedProducts();
+            updateCartBadge();
+        }
+
+        // 加载商品详情
+        async function loadProductDetail(productId) {
+            let product = null;
+            
+            // 尝试从后端API获取
+            if (typeof ProductAPI !== 'undefined') {
+                try {
+                    const result = await ProductAPI.getProductById(productId);
+                    if (result.success && result.data) {
+                        const p = result.data;
+                        product = {
+                            id: p.id,
+                            name: p.name,
+                            price: parseFloat(p.price),
+                            originalPrice: p.original_price ? parseFloat(p.original_price) : Math.round(parseFloat(p.price) * 1.5),
+                            image: p.main_image_url || '💍',
+                            badges: [
+                                ...(p.is_new_arrival ? ['new'] : []),
+                                ...(p.is_featured ? ['hot'] : []),
+                                ...(p.is_limited_edition ? ['limited'] : []),
+                            ],
+                            description: p.description || '',
+                        };
+                    }
+                } catch (e) {
+                    console.warn('Failed to load product from API, using mock data');
+                }
+            }
+            
+            // 降级到mock数据
+            if (!product) {
+                product = mockProducts.find(p => p.id === productId);
+            }
+            
+            if (!product) {
+                alert('商品不存在');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // 更新页面内容
+            document.getElementById('productTitle').textContent = product.name;
+            document.getElementById('currentPrice').textContent = `¥${product.price}`;
+            document.getElementById('originalPrice').textContent = product.originalPrice ? `¥${product.originalPrice}` : '';
+            document.getElementById('mainImage').textContent = product.image;
+            document.getElementById('breadcrumbProduct').textContent = product.name;
+            document.title = `${product.name} - 手作珠宝`;
+
+            // 更新缩略图
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach((thumb, index) => {
+                thumb.textContent = product.image;
+            });
+
+            // 更新徽章
+            const badgesContainer = document.getElementById('productBadges');
+            badgesContainer.innerHTML = '';
+            if (product.badges) {
+                product.badges.forEach(badge => {
+                    const badgeEl = document.createElement('span');
+                    badgeEl.className = `badge badge-${badge}`;
+                    badgeEl.textContent = badge === 'new' ? '新品' : badge === 'hot' ? '热销' : '限量';
+                    badgesContainer.appendChild(badgeEl);
+                });
+            }
+
+            // 检查是否在收藏列表中
+            checkWishlistStatus(productId);
+            
+            // 追踪用户行为
+            if (typeof AIAPI !== 'undefined' && typeof TokenManager !== 'undefined' && TokenManager.isLoggedIn()) {
+                AIAPI.trackBehavior('view', productId).catch(() => {});
+            }
+        }
+
+        // 切换主图
+        function changeImage(emoji) {
+            document.getElementById('mainImage').textContent = emoji;
+            
+            // 更新缩略图激活状态
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach(thumb => {
+                thumb.classList.remove('active');
+                if (thumb.textContent === emoji) {
+                    thumb.classList.add('active');
+                }
+            });
+        }
+
+        // 选择款式
+        function selectVariant(btn) {
+            document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentVariant = btn.textContent;
+        }
+
+        // 修改数量
+        function changeQuantity(delta) {
+            const input = document.getElementById('quantityInput');
+            let newValue = parseInt(input.value) + delta;
+            if (newValue < 1) newValue = 1;
+            if (newValue > 99) newValue = 99;
+            input.value = newValue;
+            currentQuantity = newValue;
+        }
+
+        // 从详情页添加到购物车
+        function addToCartFromDetail() {
+            const product = mockProducts.find(p => p.id === currentProductId);
+            if (!product) return;
+
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            // 检查是否已存在相同商品和款式
+            const existingIndex = cart.findIndex(item => 
+                item.id === currentProductId && item.variant === currentVariant
+            );
+
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += currentQuantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    variant: currentVariant,
+                    quantity: currentQuantity
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartBadge();
+            showNotification(`已将 ${currentQuantity} 件商品加入购物车!`);
+        }
+
+        // 立即购买
+        function buyNow() {
+            addToCartFromDetail();
+            window.location.href = 'cart.html';
+        }
+
+        // 从详情页切换收藏
+        function toggleWishlistFromDetail() {
+            toggleWishlist(currentProductId);
+            checkWishlistStatus(currentProductId);
+        }
+
+        // 检查收藏状态
+        function checkWishlistStatus(productId) {
+            const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+            const btn = document.getElementById('wishlistBtn');
+            
+            if (wishlist.includes(productId)) {
+                btn.classList.add('active');
+                btn.textContent = '♥';
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '♡';
+            }
+        }
+
+        // 加载评价
+        function loadReviews() {
+            const reviews = [
+                {
+                    id: '1',
+                    user: '小***8',
+                    avatar: '👩',
+                    rating: 5,
+                    date: '2026-05-20',
+                    content: '非常漂亮的戒指，做工精致，月光石很有质感，包装也很精美，送人自用都很合适！',
+                    images: ['💍', '✨'],
+                    helpful: 28
+                },
+                {
+                    id: '2',
+                    user: '阳***光',
+                    avatar: '👨',
+                    rating: 5,
+                    date: '2026-05-18',
+                    content: '质量很好，戴着很舒服，大小可以调节，非常满意的一次购物！',
+                    images: [],
+                    helpful: 15
+                },
+                {
+                    id: '3',
+                    user: '梦***想',
+                    avatar: '👩',
+                    rating: 4,
+                    date: '2026-05-15',
+                    content: '整体不错，就是比想象中稍微小一点，但是很漂亮，很喜欢。',
+                    images: ['💎'],
+                    helpful: 8
+                }
+            ];
+
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">${review.avatar}</div>
+                            <div>
+                                <div class="reviewer-name">${review.user}</div>
+                                <div class="stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                            </div>
+                        </div>
+                        <div class="review-date">${review.date}</div>
+                    </div>
+                    <div class="review-content">${review.content}</div>
+                    ${review.images.length > 0 ? `
+                        <div class="review-images">
+                            ${review.images.map(img => `<div class="review-img">${img}</div>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="review-helpful">
+                        <button class="helpful-btn" onclick="likeReview('${review.id}')">
+                            👍 有用 (${review.helpful})
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 点赞评价
+        function likeReview(reviewId) {
+            showNotification('感谢您的反馈!');
+        }
+
+        // 加载相关推荐
+        async function loadRelatedProducts() {
+            let relatedProducts = [];
+            
+            if (typeof AIAPI !== 'undefined') {
+                try {
+                    const result = await AIAPI.getSimilarProducts(currentProductId, 4);
+                    if (result.success && result.data) {
+                        relatedProducts = (result.data.products || result.data).map(p => mapApiProduct(p));
+                    }
+                } catch (e) {}
+            }
+            
+            if (relatedProducts.length === 0) {
+                relatedProducts = mockProducts.filter(p => p.id !== currentProductId).slice(0, 4);
+            }
+            
+            const container = document.getElementById('relatedGrid');
+            container.innerHTML = relatedProducts.map(product => createProductCard(product)).join('');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initProductDetail);
+
+        // 数量输入框变化监听
+        document.getElementById('quantityInput')?.addEventListener('change', function() {
+            let value = parseInt(this.value);
+            if (value < 1) value = 1;
+            if (value > 99) value = 99;
+            this.value = value;
+            currentQuantity = value;
+        });
+    </script>
+</body>
+</html>

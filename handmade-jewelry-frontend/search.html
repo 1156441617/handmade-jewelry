@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索 - 手作珠宝</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .search-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .search-header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .search-box-large {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input-large {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input-large:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn-large {
+            padding: 15px 40px;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn-large:hover {
+            background: #b8976a;
+            transform: translateY(-2px);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background: var(--bg-light);
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-chip.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .search-results {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-count {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .results-count strong {
+            color: var(--primary-color);
+        }
+
+        .sort-options {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .sort-select {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .product-grid-search {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .empty-results {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .empty-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .search-history {
+            margin-top: 20px;
+        }
+
+        .history-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .history-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-tag {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-tag:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .search-box-large {
+                flex-direction: column;
+            }
+
+            .search-btn-large {
+                width: 100%;
+            }
+
+            .product-grid-search {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">手作珠宝</a>
+                <div class="nav-links">
+                    <a href="index.html#products">全部商品</a>
+                    <a href="index.html#categories">分类</a>
+                    <a href="index.html#features">特色服务</a>
+                    <a href="#about">关于我们</a>
+                </div>
+                <div class="nav-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="搜索商品..." id="headerSearchInput">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                    <a href="cart.html" class="cart-icon">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </a>
+                    <button class="user-btn" onclick="showLoginModal()">👤</button>
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 搜索内容 -->
+    <div class="search-container">
+        <div class="search-header">
+            <div class="search-box-large">
+                <input type="text" class="search-input-large" id="searchInput" placeholder="搜索戒指、项链、耳环...">
+                <button class="search-btn-large" onclick="performSearch()">搜索</button>
+            </div>
+            
+            <div class="search-filters">
+                <span class="filter-chip active" onclick="filterByCategory('all')">全部</span>
+                <span class="filter-chip" onclick="filterByCategory('rings')">戒指</span>
+                <span class="filter-chip" onclick="filterByCategory('earrings')">耳环</span>
+                <span class="filter-chip" onclick="filterByCategory('necklaces')">项链</span>
+                <span class="filter-chip" onclick="filterByCategory('bracelets')">手链</span>
+                <span class="filter-chip" onclick="filterByCategory('gift-sets')">礼盒套装</span>
+            </div>
+
+            <div class="search-history" id="searchHistory" style="display: none;">
+                <div class="history-title">最近搜索</div>
+                <div class="history-tags" id="historyTags"></div>
+            </div>
+        </div>
+
+        <div class="search-results">
+            <div class="results-header">
+                <div class="results-count" id="resultsCount">找到 <strong>0</strong> 个商品</div>
+                <div class="sort-options">
+                    <span class="sort-label">排序:</span>
+                    <select class="sort-select" id="sortSelect" onchange="sortResults()">
+                        <option value="relevance">相关性</option>
+                        <option value="price-asc">价格从低到高</option>
+                        <option value="price-desc">价格从高到低</option>
+                        <option value="rating">评分最高</option>
+                        <option value="newest">最新上架</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="product-grid-search" id="searchResults">
+                <!-- 搜索结果将通过JS动态加载 -->
+            </div>
+
+            <div class="empty-results" id="emptyResults" style="display: none;">
+                <div class="empty-icon">🔍</div>
+                <h3 class="empty-title">暂无搜索结果</h3>
+                <p class="empty-text">试试其他关键词吧~</p>
+                <button class="search-btn-large" onclick="window.location.href='index.html'">浏览全部商品</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <ul>
+                        <li><a href="#">品牌故事</a></li>
+                        <li><a href="#">设计理念</a></li>
+                        <li><a href="#">工艺流程</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>客户服务</h3>
+                    <ul>
+                        <li><a href="#">配送说明</a></li>
+                        <li><a href="#">退换货政策</a></li>
+                        <li><a href="#">常见问题</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>关注我们</h3>
+                    <ul>
+                        <li><a href="#">微信公众号</a></li>
+                        <li><a href="#">小红书</a></li>
+                        <li><a href="#">抖音</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li>客服微信: jewelry_handmade</li>
+                        <li>邮箱: contact@handmade.com</li>
+                        <li>电话: 400-888-8888</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 手作珠宝. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // 搜索页面逻辑
+        let currentKeyword = '';
+        let currentCategory = 'all';
+        let searchResults = [];
+
+        // 初始化
+        function initSearch() {
+            // 从URL获取搜索关键词
+            const urlParams = new URLSearchParams(window.location.search);
+            const keyword = urlParams.get('q');
+            
+            if (keyword) {
+                document.getElementById('searchInput').value = keyword;
+                performSearch(keyword);
+            } else {
+                // 显示热门搜索
+                showPopularProducts();
+            }
+
+            loadSearchHistory();
+            updateCartBadge();
+
+            // 绑定回车键搜索
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        }
+
+        // 执行搜索
+        function performSearch(keyword) {
+            keyword = keyword || document.getElementById('searchInput').value.trim();
+            
+            if (!keyword) {
+                showNotification('请输入搜索关键词');
+                return;
+            }
+
+            currentKeyword = keyword;
+            
+            // 保存搜索历史
+            saveSearchHistory(keyword);
+
+            // 过滤商品
+            searchResults = mockProducts.filter(product => {
+                const matchKeyword = product.name.toLowerCase().includes(keyword.toLowerCase()) ||
+                                   product.description.toLowerCase().includes(keyword.toLowerCase());
+                
+                const matchCategory = currentCategory === 'all' || 
+                                     product.category === currentCategory;
+
+                return matchKeyword && matchCategory;
+            });
+
+            // 显示结果
+            displayResults();
+        }
+
+        // 按分类筛选
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 重新搜索
+            if (currentKeyword) {
+                performSearch(currentKeyword);
+            }
+        }
+
+        // 显示搜索结果
+        function displayResults() {
+            const container = document.getElementById('searchResults');
+            const emptyEl = document.getElementById('emptyResults');
+            const countEl = document.getElementById('resultsCount');
+
+            countEl.innerHTML = `找到 <strong>${searchResults.length}</strong> 个商品`;
+
+            if (searchResults.length === 0) {
+                container.innerHTML = '';
+                emptyEl.style.display = 'block';
+            } else {
+                emptyEl.style.display = 'none';
+                container.innerHTML = searchResults.map(product => createProductCard(product)).join('');
+            }
+        }
+
+        // 排序结果
+        function sortResults() {
+            const sortBy = document.getElementById('sortSelect').value;
+
+            switch(sortBy) {
+                case 'price-asc':
+                    searchResults.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    searchResults.sort((a, b) => b.price - a.price);
+                    break;
+                case 'rating':
+                    searchResults.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'newest':
+                    searchResults.sort((a, b) => b.id - a.id);
+                    break;
+                default:
+                    // 相关性排序保持不变
+                    break;
+            }
+
+            displayResults();
+        }
+
+        // 显示热门商品
+        function showPopularProducts() {
+            searchResults = mockProducts.slice(0, 8);
+            displayResults();
+            document.getElementById('resultsCount').innerHTML = `热门推荐 <strong>${searchResults.length}</strong> 个商品`;
+        }
+
+        // 保存搜索历史
+        function saveSearchHistory(keyword) {
+            let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            
+            // 移除重复
+            history = history.filter(k => k !== keyword);
+            
+            // 添加到开头
+            history.unshift(keyword);
+            
+            // 只保留最近10条
+            history = history.slice(0, 10);
+            
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+        }
+
+        // 加载搜索历史
+        function loadSearchHistory() {
+            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            
+            if (history.length > 0) {
+                const container = document.getElementById('searchHistory');
+                const tagsContainer = document.getElementById('historyTags');
+                
+                container.style.display = 'block';
+                tagsContainer.innerHTML = history.map(keyword => 
+                    `<span class="history-tag" onclick="searchFromHistory('${keyword}')">${keyword}</span>`
+                ).join('');
+            }
+        }
+
+        // 从历史记录搜索
+        function searchFromHistory(keyword) {
+            document.getElementById('searchInput').value = keyword;
+            performSearch(keyword);
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initSearch);
+
+        // 头部搜索框同步
+        document.getElementById('headerSearchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const keyword = this.value.trim();
+                window.location.href = `search.html?q=${encodeURIComponent(keyword)}`;
+            }
+        });
+    </script>
+</body>
+</html>
