@@ -2,7 +2,9 @@
 // 手作饰品电商 - API服务层
 // ============================================
 
-const API_BASE_URL = 'http://localhost:3001/api/v1';
+const API_BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3001/api/v1'
+    : '/api/v1';
 
 // Token管理
 const TokenManager = {

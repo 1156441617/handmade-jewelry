@@ -66,23 +66,13 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'admin', 'index.html'));
 });
 
-// 根路径
-app.get('/', (req, res) => {
-  res.json({
-    name: 'Handmade Jewelry E-Commerce API',
-    version: API_VERSION,
-    status: 'running',
-    documentation: `/api/${API_VERSION}/health`,
-    admin: '/admin',
-  });
-});
+// 前端静态文件
+const frontendPath = path.join(__dirname, '..', '..', 'handmade-jewelry-frontend');
+app.use(express.static(frontendPath));
 
-// 404处理
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: '接口不存在',
-  });
+// 前端页面 - SPA回退
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // 错误处理
