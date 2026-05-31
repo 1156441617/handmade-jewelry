@@ -4,7 +4,8 @@
   "description": "Handmade Jewelry E-commerce Platform",
   "scripts": {
     "dev": "cd handmade-jewelry-backend && npm run dev",
-    "start": "cd handmade-jewelry-backend && npm start"
+    "start": "cd handmade-jewelry-backend && npm start",
+    "postinstall": "cd handmade-jewelry-backend && npm install"
   },
   "keywords": ["ecommerce", "jewelry"],
   "author": "",
