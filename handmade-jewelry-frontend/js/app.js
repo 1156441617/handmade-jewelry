@@ -522,10 +522,9 @@ function updateAuthUI() {
     const isLoggedIn = TokenManager.isLoggedIn ? TokenManager.isLoggedIn() : localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     
-    // 可以在这里更新导航栏的用户状态显示
     const userBtn = document.querySelector('.user-btn');
     if (userBtn && isLoggedIn && user) {
-        userBtn.textContent = user.username?.charAt(0) || '👤';
+        userBtn.innerHTML = user.username?.charAt(0)?.toUpperCase() || 'U';
         userBtn.title = user.username || user.email;
     }
 }
