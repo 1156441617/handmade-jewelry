@@ -88,10 +88,57 @@ const mockUsers = [
 ];
 
 // 内存mock订单存储
-let mockOrders = [];
+let mockOrders = [
+  {
+    id: 'order-001', order_number: 'ORD20260531000001', user_id: 'user-001',
+    status: 'pending', payment_method: null, payment_status: 'pending',
+    subtotal: 168.00, shipping_fee: 0, discount_amount: 0, total_amount: 168.00,
+    items: [
+      { product_id: '1', product_name: '月光石编织戒指', product_image: '💍', quantity: 1, unit_price: 168.00, subtotal: 168.00 }
+    ],
+    shipping_name: '测试用户', shipping_phone: '13800138000', shipping_address: '北京市朝阳区测试地址',
+    created_at: new Date(Date.now() - 3600000).toISOString()
+  },
+  {
+    id: 'order-002', order_number: 'ORD20260530000002', user_id: 'user-001',
+    status: 'paid', payment_method: 'alipay', payment_status: 'paid',
+    subtotal: 486.00, shipping_fee: 0, discount_amount: 0, total_amount: 486.00,
+    items: [
+      { product_id: '2', product_name: '淡水珍珠耳环', product_image: '✨', quantity: 1, unit_price: 128.00, subtotal: 128.00 },
+      { product_id: '3', product_name: '水晶能量项链', product_image: '📿', quantity: 1, unit_price: 298.00, subtotal: 298.00 }
+    ],
+    shipping_name: '测试用户', shipping_phone: '13800138000', shipping_address: '北京市朝阳区测试地址',
+    created_at: new Date(Date.now() - 86400000).toISOString()
+  },
+  {
+    id: 'order-003', order_number: 'ORD20260528000003', user_id: 'user-001',
+    status: 'shipped', payment_method: 'wechat', payment_status: 'paid',
+    subtotal: 198.00, shipping_fee: 10.00, discount_amount: 0, total_amount: 208.00,
+    items: [
+      { product_id: '8', product_name: '黑曜石守护手链', product_image: '🖤', quantity: 1, unit_price: 198.00, subtotal: 198.00 }
+    ],
+    shipping_name: '测试用户', shipping_phone: '13800138000', shipping_address: '北京市朝阳区测试地址',
+    created_at: new Date(Date.now() - 259200000).toISOString(),
+    tracking_number: 'SF1234567890'
+  },
+  {
+    id: 'order-004', order_number: 'ORD20260520000004', user_id: 'user-001',
+    status: 'completed', payment_method: 'alipay', payment_status: 'paid',
+    subtotal: 228.00, shipping_fee: 0, discount_amount: 0, total_amount: 228.00,
+    items: [
+      { product_id: '6', product_name: '复古银饰戒指套装', product_image: '💍', quantity: 1, unit_price: 228.00, subtotal: 228.00 }
+    ],
+    shipping_name: '测试用户', shipping_phone: '13800138000', shipping_address: '北京市朝阳区测试地址',
+    created_at: new Date(Date.now() - 864000000).toISOString()
+  }
+];
 let mockSessions = [];
 let mockBehaviors = [];
-let mockFavorites = [];
+let mockFavorites = [
+  { user_id: 'user-001', product_id: '1', created_at: new Date().toISOString() },
+  { user_id: 'user-001', product_id: '5', created_at: new Date().toISOString() },
+  { user_id: 'user-001', product_id: '7', created_at: new Date().toISOString() }
+];
 let mockRecommendations = [];
 let mockGeneratedContent = [];
 let mockPlatformMappings = [];
@@ -350,10 +397,17 @@ const handleMockQuery = async (text, params) => {
   if (sql.includes('from product_favorites') && sql.includes('join products')) {
     const userId = params[0];
     const userFavs = mockFavorites.filter(f => f.user_id === userId);
+    const pageSize = parseInt(params[1]) || 20;
+    const offset = parseInt(params[2]) || 0;
+    const sliced = userFavs.slice(offset, offset + pageSize);
     return {
-      rows: userFavs.map(f => {
+      rows: sliced.map(f => {
         const p = mockData.products.find(pr => pr.id === f.product_id);
-        return p ? { id: p.id, name: p.name, price: p.price, main_image_url: p.mainImage, rating_average: p.rating, favorited_at: new Date().toISOString() } : null;
+        return p ? {
+          id: p.id, name: p.name, slug: p.slug || p.name.toLowerCase().replace(/\s+/g, '-'),
+          price: p.price, originalPrice: p.originalPrice, main_image_url: p.mainImage || p.image,
+          rating_average: p.rating, favorited_at: f.created_at
+        } : null;
       }).filter(Boolean),
       rowCount: userFavs.length,
     };

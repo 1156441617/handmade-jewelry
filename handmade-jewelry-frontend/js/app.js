@@ -212,32 +212,34 @@ function createProductCard(product) {
     const badgesHtml = (product.badges || []).map(badge => {
         const badgeClass = badge === 'new' ? 'badge-new' : badge === 'hot' ? 'badge-hot' : 'badge-limited';
         const badgeText = badge === 'new' ? '新品' : badge === 'hot' ? '热销' : '限量';
-        return `<span class="badge ${badgeClass}">${badgeText}</span>`;
+        return `<span class="product-badge ${badgeClass}">${badgeText}</span>`;
     }).join('');
     
     const originalPriceHtml = product.originalPrice ? 
-        `<span class="original-price">¥${product.originalPrice}</span>` : '';
+        `<span class="product-original-price">¥${product.originalPrice}</span>` : '';
+
+    const starsHtml = '★'.repeat(Math.floor(product.rating || 4.5));
     
     return `
         <div class="product-card" data-product-id="${product.id}" onclick="goToProductDetail('${product.id}')">
-            <div class="product-image-wrapper" style="background: ${product.gradient}">
-                <div class="product-emoji">${product.image}</div>
-                <div class="product-badges">${badgesHtml}</div>
-                <button class="wishlist-btn" onclick="toggleWishlist(event, '${product.id}')">♡</button>
+            <div class="product-image">
+                <span style="font-size:64px">${product.image}</span>
+                ${badgesHtml ? `<div class="product-badges">${badgesHtml}</div>` : ''}
+                <button class="product-wishlist" onclick="toggleWishlist(event, '${product.id}')">♡</button>
             </div>
-            <div class="product-details">
-                <h3 class="product-title">${product.name}</h3>
-                <div class="product-meta">
-                    <div class="rating"><span class="star">⭐⭐⭐⭐⭐</span></div>
-                    <span class="rating-count">(${product.reviews})</span>
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-desc">${product.description}</p>
+                <div class="product-price-row">
+                    <span class="product-price">¥${product.price}</span>
+                    ${originalPriceHtml}
                 </div>
-                <p class="product-description">${product.description}</p>
-                <div class="product-footer">
-                    <div class="price-wrapper">
-                        <span class="current-price">¥${product.price}</span>
-                        ${originalPriceHtml}
-                    </div>
-                    <button class="add-to-cart" onclick="addToCart(event, '${product.id}')">加入购物车</button>
+                <div class="product-rating">
+                    <span class="product-rating-stars" style="color:var(--gold)">${starsHtml}</span>
+                    <span style="color:var(--text-muted); font-size:12px">${product.reviews}条评价</span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn-add-cart" onclick="addToCart(event, '${product.id}')">加入购物车</button>
                 </div>
             </div>
         </div>
