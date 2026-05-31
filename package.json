@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Handmade Jewelry E-commerce Platform",
   "scripts": {
+    "postinstall": "cd handmade-jewelry-backend && npm install",
     "dev": "cd handmade-jewelry-backend && npm run dev",
     "start": "cd handmade-jewelry-backend && npm start"
   },
