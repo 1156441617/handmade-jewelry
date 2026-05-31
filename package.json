@@ -2,10 +2,16 @@
   "name": "handmade-jewelry",
   "version": "1.0.0",
   "description": "Handmade Jewelry E-commerce Platform",
+  "main": "handmade-jewelry-backend/src/server.js",
   "scripts": {
     "dev": "cd handmade-jewelry-backend && npm run dev",
     "start": "cd handmade-jewelry-backend && npm start",
-    "postinstall": "cd handmade-jewelry-backend && npm install"
+    "build": "cd handmade-jewelry-backend && npm install",
+    "postinstall": "npm run build"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": ["ecommerce", "jewelry"],
   "author": "",
