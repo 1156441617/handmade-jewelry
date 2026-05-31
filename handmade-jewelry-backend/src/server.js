@@ -17,8 +17,10 @@ const PORT = process.env.PORT || 3000;
 // 中间件配置
 // ============================================
 
-// 安全头
-app.use(helmet());
+// 安全头 - 禁用CSP以兼容内联事件处理
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
 
 // CORS配置
 const corsOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'];
