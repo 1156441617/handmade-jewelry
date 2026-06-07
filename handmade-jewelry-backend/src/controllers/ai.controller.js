@@ -4,6 +4,25 @@ const { query } = require('../config/database');
 const recommendationEngine = new AIRecommendationEngine();
 const contentGenerator = new AIContentGenerator();
 
+async function resolveProduct(req, res) {
+  const productId = req.params.productId || req.body.productId;
+  const result = await query(
+    'SELECT * FROM products WHERE id = $1',
+    [productId]
+  );
+
+  if (result.rows.length === 0) {
+    res.status(404).json({
+      success: false,
+      errorCode: 'PRODUCT_NOT_FOUND',
+      message: '商品不存在',
+    });
+    return null;
+  }
+
+  return result.rows[0];
+}
+
 /**
  * 获取个性化推荐
  */
@@ -25,6 +44,7 @@ const getPersonalizedRecommendations = async (req, res) => {
     console.error('Get personalized recommendations error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_RECOMMENDATION_FAILED',
       message: '获取推荐失败',
     });
   }
@@ -51,6 +71,7 @@ const getSimilarProducts = async (req, res) => {
     console.error('Get similar products error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_SIMILAR_FAILED',
       message: '获取相似商品失败',
     });
   }
@@ -76,6 +97,7 @@ const getTrendingProducts = async (req, res) => {
     console.error('Get trending products error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_TRENDING_FAILED',
       message: '获取热门商品失败',
     });
   }
@@ -104,6 +126,7 @@ const trackBehavior = async (req, res) => {
     console.error('Track behavior error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_TRACK_FAILED',
       message: '记录失败',
     });
   }
@@ -114,22 +137,9 @@ const trackBehavior = async (req, res) => {
  */
 const generateProductDescription = async (req, res) => {
   try {
-    const { productId } = req.params;
-    
-    // 获取商品信息
-    const result = await query(
-      'SELECT * FROM products WHERE id = $1',
-      [productId]
-    );
+    const product = await resolveProduct(req, res);
+    if (!product) return;
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: '商品不存在',
-      });
-    }
-
-    const product = result.rows[0];
     const generated = await contentGenerator.generateProductDescription(product);
 
     res.json({
@@ -140,6 +150,7 @@ const generateProductDescription = async (req, res) => {
     console.error('Generate product description error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_GENERATION_FAILED',
       message: '生成失败',
     });
   }
@@ -150,21 +161,9 @@ const generateProductDescription = async (req, res) => {
  */
 const generateXiaohongshuPost = async (req, res) => {
   try {
-    const { productId } = req.params;
-    
-    const result = await query(
-      'SELECT * FROM products WHERE id = $1',
-      [productId]
-    );
+    const product = await resolveProduct(req, res);
+    if (!product) return;
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: '商品不存在',
-      });
-    }
-
-    const product = result.rows[0];
     const generated = await contentGenerator.generateXiaohongshuPost(product);
 
     res.json({
@@ -175,6 +174,7 @@ const generateXiaohongshuPost = async (req, res) => {
     console.error('Generate Xiaohongshu post error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_GENERATION_FAILED',
       message: '生成失败',
     });
   }
@@ -185,21 +185,9 @@ const generateXiaohongshuPost = async (req, res) => {
  */
 const generateDouyinScript = async (req, res) => {
   try {
-    const { productId } = req.params;
-    
-    const result = await query(
-      'SELECT * FROM products WHERE id = $1',
-      [productId]
-    );
+    const product = await resolveProduct(req, res);
+    if (!product) return;
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: '商品不存在',
-      });
-    }
-
-    const product = result.rows[0];
     const generated = await contentGenerator.generateDouyinScript(product);
 
     res.json({
@@ -210,6 +198,7 @@ const generateDouyinScript = async (req, res) => {
     console.error('Generate Douyin script error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_GENERATION_FAILED',
       message: '生成失败',
     });
   }
@@ -220,21 +209,10 @@ const generateDouyinScript = async (req, res) => {
  */
 const generateBulkContent = async (req, res) => {
   try {
-    const { productId, types } = req.body;
-    
-    const result = await query(
-      'SELECT * FROM products WHERE id = $1',
-      [productId]
-    );
+    const { types } = req.body;
+    const product = await resolveProduct(req, res);
+    if (!product) return;
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: '商品不存在',
-      });
-    }
-
-    const product = result.rows[0];
     const results = {};
 
     // 根据请求的类型生成内容
@@ -262,6 +240,7 @@ const generateBulkContent = async (req, res) => {
     console.error('Generate bulk content error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_BULK_GENERATION_FAILED',
       message: '批量生成失败',
     });
   }
@@ -273,7 +252,14 @@ const generateBulkContent = async (req, res) => {
 const getUserBehaviorStats = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { days = 30 } = req.query;
+    const days = parseInt(req.query.days) || 30;
+    if (isNaN(days) || days < 1) {
+      return res.status(400).json({
+        success: false,
+        errorCode: 'AI_INVALID_PARAMS',
+        message: 'days参数无效',
+      });
+    }
 
     const result = await query(
       `SELECT 
@@ -282,10 +268,10 @@ const getUserBehaviorStats = async (req, res) => {
         COUNT(DISTINCT product_id) as unique_products
        FROM user_behaviors
        WHERE user_id = $1
-         AND created_at >= NOW() - INTERVAL '${days} days'
+         AND created_at >= NOW() - INTERVAL '1 day' * $2
        GROUP BY action
        ORDER BY count DESC`,
-      [userId]
+      [userId, days]
     );
 
     res.json({
@@ -299,6 +285,7 @@ const getUserBehaviorStats = async (req, res) => {
     console.error('Get user behavior stats error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'AI_STATS_FAILED',
       message: '获取统计失败',
     });
   }

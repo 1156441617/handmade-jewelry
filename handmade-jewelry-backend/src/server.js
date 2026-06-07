@@ -11,7 +11,7 @@ const { redis } = require('./config/redis');
 const routes = require('./routes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // ============================================
 // 中间件配置
@@ -20,12 +20,14 @@ const PORT = process.env.PORT || 3000;
 // 安全头 - 禁用CSP以兼容内联事件处理
 app.use(helmet({
   contentSecurityPolicy: false,
+  crossOriginOpenerPolicy: false,
+  crossOriginResourcePolicy: false,
 }));
 
 // CORS配置
 const corsOrigins = process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'];
 app.use(cors({
-  origin: corsOrigins,
+  origin: true,
   credentials: true,
 }));
 
@@ -129,14 +131,15 @@ const startServer = async () => {
 const gracefulShutdown = async (signal) => {
   console.log(`\n${signal} received. Starting graceful shutdown...`);
   
-  // 关闭HTTP服务器
-  if (global._server && global._server.close) {
-    global._server.close(() => {
-      console.log('✅ HTTP server closed');
+  if (global._server) {
+    await new Promise((resolve) => {
+      global._server.close(() => {
+        console.log('✅ HTTP server closed');
+        resolve();
+      });
     });
   }
 
-  // 关闭数据库连接池
   try {
     const { pool } = require('./config/database');
     await pool.end();
@@ -145,7 +148,6 @@ const gracefulShutdown = async (signal) => {
     console.log('⚠️  Database not available, skipping');
   }
 
-  // 关闭Redis连接
   try {
     if (redis && redis.quit) {
       await redis.quit();

@@ -27,6 +27,19 @@ const TokenManager = {
     }
 };
 
+// Token刷新锁，防止并发刷新
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+function onTokenRefreshed(newToken) {
+    refreshSubscribers.forEach(cb => cb(newToken));
+    refreshSubscribers = [];
+}
+
+function addRefreshSubscriber(callback) {
+    refreshSubscribers.push(callback);
+}
+
 // 通用请求方法
 async function apiRequest(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
@@ -36,7 +49,6 @@ async function apiRequest(endpoint, options = {}) {
         ...options.headers,
     };
     
-    // 添加认证token
     const token = TokenManager.getAccessToken();
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -50,11 +62,26 @@ async function apiRequest(endpoint, options = {}) {
         
         const data = await response.json();
         
-        // Token过期，尝试刷新
         if (response.status === 403 && data.message === '令牌已过期') {
+            if (isRefreshing) {
+                return new Promise(function(resolve) {
+                    addRefreshSubscriber(function(newToken) {
+                        headers['Authorization'] = `Bearer ${newToken}`;
+                        fetch(url, { ...options, headers }).then(function(retryResponse) {
+                            resolve(retryResponse.json());
+                        });
+                    });
+                });
+            }
+            
+            isRefreshing = true;
             const refreshed = await refreshToken();
+            isRefreshing = false;
+            
             if (refreshed) {
-                headers['Authorization'] = `Bearer ${TokenManager.getAccessToken()}`;
+                const newToken = TokenManager.getAccessToken();
+                onTokenRefreshed(newToken);
+                headers['Authorization'] = `Bearer ${newToken}`;
                 const retryResponse = await fetch(url, { ...options, headers });
                 return await retryResponse.json();
             }

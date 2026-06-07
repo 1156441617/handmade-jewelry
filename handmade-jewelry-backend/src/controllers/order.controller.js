@@ -34,6 +34,7 @@ const createOrder = async (req, res) => {
     if (error) {
       return res.status(400).json({
         success: false,
+        errorCode: 'ORDER_VALIDATION_ERROR',
         message: error.details[0].message,
       });
     }
@@ -63,6 +64,7 @@ const createOrder = async (req, res) => {
         await client.query('ROLLBACK');
         return res.status(404).json({
           success: false,
+          errorCode: 'ORDER_PRODUCT_NOT_FOUND',
           message: `商品 ${item.product_id} 不存在或已下架`,
         });
       }
@@ -74,6 +76,7 @@ const createOrder = async (req, res) => {
         await client.query('ROLLBACK');
         return res.status(400).json({
           success: false,
+          errorCode: 'ORDER_OUT_OF_STOCK',
           message: `商品 "${product.name}" 库存不足`,
         });
       }
@@ -92,6 +95,7 @@ const createOrder = async (req, res) => {
             await client.query('ROLLBACK');
             return res.status(400).json({
               success: false,
+              errorCode: 'ORDER_VARIANT_OUT_OF_STOCK',
               message: `规格库存不足`,
             });
           }
@@ -247,6 +251,7 @@ const createOrder = async (req, res) => {
     console.error('Create order error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'ORDER_CREATE_FAILED',
       message: '创建订单失败',
     });
   } finally {
@@ -302,19 +307,26 @@ const getUserOrders = async (req, res) => {
       [...queryParams, pageSize, offset]
     );
 
-    // 查询每个订单的商品
-    const orders = await Promise.all(
-      result.rows.map(async (order) => {
-        const itemsResult = await query(
-          'SELECT * FROM order_items WHERE order_id = $1',
-          [order.id]
-        );
-        return {
-          ...order,
-          items: itemsResult.rows,
-        };
-      })
-    );
+    // 批量查询所有订单的商品
+    const orderIds = result.rows.map(o => o.id);
+    let itemsByOrder = {};
+
+    if (orderIds.length > 0) {
+      const itemsResult = await query(
+        'SELECT * FROM order_items WHERE order_id = ANY($1)',
+        [orderIds]
+      );
+      itemsByOrder = itemsResult.rows.reduce((acc, item) => {
+        if (!acc[item.order_id]) acc[item.order_id] = [];
+        acc[item.order_id].push(item);
+        return acc;
+      }, {});
+    }
+
+    const orders = result.rows.map(order => ({
+      ...order,
+      items: itemsByOrder[order.id] || [],
+    }));
 
     res.json({
       success: true,
@@ -332,6 +344,7 @@ const getUserOrders = async (req, res) => {
     console.error('Get user orders error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'ORDER_LIST_FAILED',
       message: '获取订单列表失败',
     });
   }
@@ -351,6 +364,7 @@ const getOrderById = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
+        errorCode: 'ORDER_NOT_FOUND',
         message: '订单不存在',
       });
     }
@@ -374,6 +388,7 @@ const getOrderById = async (req, res) => {
     console.error('Get order detail error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'ORDER_DETAIL_FAILED',
       message: '获取订单详情失败',
     });
   }
@@ -394,16 +409,17 @@ const cancelOrder = async (req, res) => {
     if (order.rows.length === 0) {
       return res.status(404).json({
         success: false,
+        errorCode: 'ORDER_NOT_FOUND',
         message: '订单不存在',
       });
     }
 
     const orderData = order.rows[0];
 
-    // 只有待支付订单可以取消
     if (orderData.status !== 'pending') {
       return res.status(400).json({
         success: false,
+        errorCode: 'ORDER_CANNOT_CANCEL',
         message: '该订单状态不允许取消',
       });
     }
@@ -456,6 +472,7 @@ const cancelOrder = async (req, res) => {
     console.error('Cancel order error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'ORDER_CANCEL_FAILED',
       message: '取消订单失败',
     });
   }

@@ -3,8 +3,16 @@ const { query, NO_DB_MODE, mockUsers } = require('../config/database');
 require('dotenv').config();
 
 // JWT密钥
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-refresh-secret';
+const JWT_SECRET = process.env.JWT_SECRET || (
+  process.env.NODE_ENV === 'production'
+    ? (() => { console.error('FATAL: JWT_SECRET must be set in production'); process.exit(1); })()
+    : 'dev-only-secret-key'
+);
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || (
+  process.env.NODE_ENV === 'production'
+    ? (() => { console.error('FATAL: JWT_REFRESH_SECRET must be set in production'); process.exit(1); })()
+    : 'dev-only-refresh-secret'
+);
 
 // 生成访问令牌
 const generateAccessToken = (user) => {

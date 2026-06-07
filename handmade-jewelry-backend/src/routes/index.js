@@ -7,10 +7,8 @@ const productController = require('../controllers/product.controller');
 const orderController = require('../controllers/order.controller');
 const aiController = require('../controllers/ai.controller');
 const platformController = require('../controllers/platform.controller');
-const { authenticateToken, refreshToken } = require('../middleware/auth');
-
-// 导入支付服务
-const paymentService = require('../services/payment.service');
+const paymentController = require('../controllers/payment.controller');
+const { authenticateToken, refreshToken, authorize } = require('../middleware/auth');
 
 // ============================================
 // 认证路由
@@ -31,6 +29,7 @@ router.get('/products/categories', productController.getCategories);
 router.get('/products/:id', productController.getProductById);
 
 // 需要认证的商品操作
+router.post('/products/seller-publish', productController.createProductFromSeller);
 router.post('/products', authenticateToken, productController.createProduct);
 router.put('/products/:id', authenticateToken, productController.updateProduct);
 router.delete('/products/:id', authenticateToken, productController.deleteProduct);
@@ -51,98 +50,10 @@ router.post('/orders/:id/cancel', authenticateToken, orderController.cancelOrder
 // ============================================
 // 支付路由
 // ============================================
-router.post('/payments/alipay/create', authenticateToken, async (req, res) => {
-  try {
-    const { orderId } = req.body;
-    
-    // 查询订单信息
-    const orderResult = await require('../config/database').query(
-      'SELECT * FROM orders WHERE id = $1 AND user_id = $2',
-      [orderId, req.user.id]
-    );
-
-    if (orderResult.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: '订单不存在',
-      });
-    }
-
-    const order = orderResult.rows[0];
-
-    // 创建支付宝订单
-    const result = await paymentService.createAlipayOrder(
-      order.order_number,
-      order.total_amount,
-      `手作饰品订单 ${order.order_number}`,
-      `订单金额: ¥${order.total_amount}`
-    );
-
-    // 更新支付方式
-    await require('../config/database').query(
-      'UPDATE orders SET payment_method = $1 WHERE id = $2',
-      ['alipay', orderId]
-    );
-
-    res.json(result);
-  } catch (error) {
-    console.error('Create Alipay order error:', error);
-    res.status(500).json({
-      success: false,
-      message: '创建支付订单失败',
-    });
-  }
-});
-
-router.post('/payments/wechat/create', authenticateToken, async (req, res) => {
-  try {
-    const { orderId } = req.body;
-    
-    const orderResult = await require('../config/database').query(
-      'SELECT * FROM orders WHERE id = $1 AND user_id = $2',
-      [orderId, req.user.id]
-    );
-
-    if (orderResult.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: '订单不存在',
-      });
-    }
-
-    const order = orderResult.rows[0];
-
-    const result = await paymentService.createWechatOrder(
-      order.order_number,
-      order.total_amount,
-      `手作饰品订单 ${order.order_number}`
-    );
-
-    await require('../config/database').query(
-      'UPDATE orders SET payment_method = $1 WHERE id = $2',
-      ['wechat', orderId]
-    );
-
-    res.json(result);
-  } catch (error) {
-    console.error('Create Wechat order error:', error);
-    res.status(500).json({
-      success: false,
-      message: '创建支付订单失败',
-    });
-  }
-});
-
-// 支付回调(不需要认证)
-router.post('/payments/alipay/notify', async (req, res) => {
-  const result = await paymentService.handleAlipayNotify(req.body);
-  res.send(result);
-});
-
-router.post('/payments/wechat/notify', async (req, res) => {
-  const result = await paymentService.handleWechatNotify(req.body);
-  res.json(result);
-});
+router.post('/payments/alipay/create', authenticateToken, paymentController.createAlipayOrder);
+router.post('/payments/wechat/create', authenticateToken, paymentController.createWechatOrder);
+router.post('/payments/alipay/notify', paymentController.handleAlipayNotify);
+router.post('/payments/wechat/notify', paymentController.handleWechatNotify);
 
 // ============================================
 // AI推荐和内容生成路由
@@ -198,7 +109,7 @@ router.get('/health', (req, res) => {
 // ============================================
 // 管理后台统计API
 // ============================================
-router.get('/admin/stats', async (req, res) => {
+router.get('/admin/stats', authenticateToken, authorize('admin'), async (req, res) => {
   try {
     const { query, mockOrders, mockUsers, mockBehaviors } = require('../config/database');
     const { mockData } = require('../services/mock.service');
@@ -246,7 +157,7 @@ router.get('/admin/stats', async (req, res) => {
 });
 
 // 管理后台 - 创建测试订单
-router.post('/admin/create-test-order', async (req, res) => {
+router.post('/admin/create-test-order', authenticateToken, authorize('admin'), async (req, res) => {
   try {
     const { mockOrders } = require('../config/database');
     const { mockData } = require('../services/mock.service');

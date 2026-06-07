@@ -4,127 +4,148 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>匠心手作 - 独一无二的手作珠宝</title>
+    <meta name="description" content="匠心手作 - 每一件作品都蕴含匠人的心血与灵感，为你的日常增添独特光彩">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<header class="header">
+<a href="#main-content" class="skip-to-content">跳转到主要内容</a>
+
+<header class="header" role="banner">
     <div class="header-content">
-        <a href="index.html" class="logo">
-            <span class="logo-icon">💎</span>
+        <a href="index.html" class="logo" aria-label="匠心手作 - 返回首页">
+            <span class="logo-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </span>
             <span class="logo-text">匠心手作</span>
         </a>
-        <nav class="nav-menu" id="navMenu">
-            <a href="index.html" class="nav-item active">首页</a>
+        <nav class="nav-menu" id="navMenu" role="navigation" aria-label="主导航">
+            <a href="index.html" class="nav-item active" aria-current="page">首页</a>
             <a href="#new-arrivals" class="nav-item">新品上市</a>
             <a href="#products" class="nav-item">全部商品</a>
             <a href="#categories" class="nav-item">分类</a>
             <a href="profile.html" class="nav-item">我的</a>
         </nav>
         <div class="header-actions">
-            <div class="search-box">
-                <input type="text" placeholder="搜索商品..." id="searchInput">
-                <button class="search-btn">🔍</button>
+            <div class="search-box" role="search">
+                <label for="searchInput" class="sr-only">搜索商品</label>
+                <input type="search" placeholder="搜索商品..." id="searchInput" aria-label="搜索商品">
+                <button class="search-btn" aria-label="搜索">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
             </div>
-            <a href="cart.html" class="cart-btn">
-                🛒
-                <span class="cart-badge" id="cartBadge">0</span>
+            <a href="cart.html" class="cart-btn" aria-label="购物车">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span class="cart-badge" id="cartBadge" aria-label="购物车商品数量">0</span>
             </a>
-            <button class="user-btn" onclick="showLoginModal()">
+            <button class="user-btn" onclick="showLoginModal()" aria-label="用户登录">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </button>
-            <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">☰</button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="打开菜单" aria-expanded="false">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
         </div>
     </div>
 </header>
 
-<section class="hero">
+<section class="hero" aria-label="品牌主视觉">
     <div class="hero-content">
         <p class="hero-eyebrow">HANDCRAFTED JEWELRY</p>
         <h1 class="hero-title">匠心之作<br>独一无二</h1>
         <p class="hero-subtitle">每一件作品都蕴含匠人的心血与灵感，为你的日常增添独特光彩</p>
         <a href="#products" class="hero-cta">探索系列 →</a>
     </div>
-    <div class="hero-scroll-indicator">↓ 向下探索</div>
+    <div class="hero-scroll-indicator" aria-hidden="true">↓ 向下探索</div>
 </section>
 
-<section class="categories" id="categories">
+<main id="main-content">
+<section class="categories" id="categories" aria-labelledby="categories-title">
     <div class="container">
         <div class="section-header">
             <div>
-                <p class="section-label">CATEGORIES</p>
-                <h2 class="section-title">精选分类</h2>
+                <p class="section-label" id="categories-label">CATEGORIES</p>
+                <h2 class="section-title" id="categories-title">精选分类</h2>
             </div>
-            <a href="#" class="view-all">查看全部 →</a>
+            <a href="#" class="view-all" aria-label="查看全部分类">查看全部 →</a>
         </div>
-        <div class="category-grid" id="categoryGrid"></div>
+        <div class="category-grid" id="categoryGrid" role="list" aria-label="商品分类"></div>
     </div>
 </section>
 
-<section class="products-section" id="products">
+<section class="products-section" id="products" aria-labelledby="products-title">
     <div class="container">
         <div class="section-header">
             <div>
-                <p class="section-label">OUR COLLECTION</p>
-                <h2 class="section-title">热门推荐</h2>
+                <p class="section-label" id="products-label">OUR COLLECTION</p>
+                <h2 class="section-title" id="products-title">热门推荐</h2>
             </div>
-            <a href="#" class="view-all">查看全部 →</a>
+            <a href="#" class="view-all" aria-label="查看全部商品">查看全部 →</a>
         </div>
-        <div class="filter-bar">
-            <button class="filter-btn active" data-filter="all">全部</button>
-            <button class="filter-btn" data-filter="new">新品</button>
-            <button class="filter-btn" data-filter="hot">热销</button>
-            <button class="filter-btn" data-filter="limited">限量</button>
+        <div class="filter-bar" role="group" aria-label="商品筛选">
+            <button class="filter-btn active" data-filter="all" aria-pressed="true">全部</button>
+            <button class="filter-btn" data-filter="new" aria-pressed="false">新品</button>
+            <button class="filter-btn" data-filter="hot" aria-pressed="false">热销</button>
+            <button class="filter-btn" data-filter="limited" aria-pressed="false">限量</button>
         </div>
-        <div class="product-grid" id="productGrid"></div>
+        <div class="product-grid" id="productGrid" role="list" aria-label="商品列表"></div>
         <div class="load-more">
-            <button class="btn-secondary" id="loadMoreBtn">加载更多</button>
+            <button class="btn-secondary" id="loadMoreBtn" aria-label="加载更多商品">加载更多</button>
         </div>
     </div>
 </section>
 
-<section class="ai-section">
+<section class="ai-section" aria-labelledby="ai-title">
     <div class="container">
-        <h2 class="ai-section-title">AI 智能推荐</h2>
+        <h2 class="ai-section-title" id="ai-title">AI 智能推荐</h2>
         <p class="section-desc text-center">基于您的浏览偏好，为您精选好物</p>
-        <div class="product-grid mt-4" id="aiRecommendGrid"></div>
+        <div class="product-grid mt-4" id="aiRecommendGrid" role="list" aria-label="AI推荐商品"></div>
         <div class="load-more">
-            <button class="btn-secondary" onclick="loadAIRecommendations()">刷新推荐</button>
+            <button class="btn-secondary" onclick="loadAIRecommendations()" aria-label="刷新AI推荐">刷新推荐</button>
         </div>
     </div>
 </section>
 
-<section class="features">
+<section class="features" aria-labelledby="features-title">
     <div class="container">
+        <h2 class="sr-only" id="features-title">品牌特色</h2>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">🎨</div>
+                <div class="feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                </div>
                 <h3 class="feature-title">原创设计</h3>
                 <p class="feature-desc">每件作品都由独立设计师精心创作，拒绝千篇一律</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">✋</div>
+                <div class="feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                </div>
                 <h3 class="feature-title">手工制作</h3>
                 <p class="feature-desc">传统工艺与现代美学的完美结合，每一件都独一无二</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">💎</div>
+                <div class="feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
                 <h3 class="feature-title">优质材料</h3>
                 <p class="feature-desc">严选天然宝石和贵金属材质，品质值得信赖</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🎁</div>
+                <div class="feature-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                </div>
                 <h3 class="feature-title">精美包装</h3>
                 <p class="feature-desc">免费礼品包装，送礼更有心意，仪式感满满</p>
             </div>
         </div>
     </div>
 </section>
+</main>
 
-<footer class="footer">
+<footer class="footer" role="contentinfo">
     <div class="container">
         <div class="footer-content">
             <div class="footer-section">
@@ -170,43 +191,43 @@
     </div>
 </footer>
 
-<div class="modal" id="authModal">
+<div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
     <div class="modal-content">
-        <button class="modal-close" id="modalClose">×</button>
-        <div class="auth-tabs">
-            <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">登录</button>
-            <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">注册</button>
+        <button class="modal-close" id="modalClose" aria-label="关闭弹窗">×</button>
+        <div class="auth-tabs" role="tablist" aria-label="登录注册切换">
+            <button class="auth-tab active" data-tab="login" role="tab" aria-selected="true" aria-controls="loginForm" onclick="switchAuthTab('login')">登录</button>
+            <button class="auth-tab" data-tab="register" role="tab" aria-selected="false" aria-controls="registerForm" onclick="switchAuthTab('register')">注册</button>
         </div>
-        <form class="auth-form" id="loginForm">
+        <form class="auth-form" id="loginForm" role="tabpanel" aria-labelledby="login-tab">
             <div class="form-group">
-                <label class="form-label">邮箱</label>
-                <input type="email" class="form-input" placeholder="请输入邮箱" required>
+                <label class="form-label" for="loginEmail">邮箱</label>
+                <input type="email" class="form-input" id="loginEmail" placeholder="请输入邮箱" required autocomplete="email">
             </div>
             <div class="form-group">
-                <label class="form-label">密码</label>
-                <input type="password" class="form-input" placeholder="请输入密码" required>
+                <label class="form-label" for="loginPassword">密码</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="请输入密码" required autocomplete="current-password">
             </div>
             <button type="submit" class="btn-primary btn-full">登录</button>
             <p class="text-center mt-4">
                 还没账号？<a href="#" onclick="switchAuthTab('register'); return false;" class="text-gold">去注册</a>
             </p>
         </form>
-        <form class="auth-form hidden" id="registerForm">
+        <form class="auth-form hidden" id="registerForm" role="tabpanel" aria-labelledby="register-tab">
             <div class="form-group">
-                <label class="form-label">用户名</label>
-                <input type="text" class="form-input" name="username" placeholder="请输入用户名" required>
+                <label class="form-label" for="regUsername">用户名</label>
+                <input type="text" class="form-input" name="username" id="regUsername" placeholder="请输入用户名" required autocomplete="username">
             </div>
             <div class="form-group">
-                <label class="form-label">邮箱</label>
-                <input type="email" class="form-input" name="email" placeholder="请输入邮箱" required>
+                <label class="form-label" for="regEmail">邮箱</label>
+                <input type="email" class="form-input" name="email" id="regEmail" placeholder="请输入邮箱" required autocomplete="email">
             </div>
             <div class="form-group">
-                <label class="form-label">密码</label>
-                <input type="password" class="form-input" name="password" placeholder="至少6个字符" required>
+                <label class="form-label" for="regPassword">密码</label>
+                <input type="password" class="form-input" name="password" id="regPassword" placeholder="至少6个字符" required autocomplete="new-password" minlength="6">
             </div>
             <div class="form-group">
-                <label class="form-label">确认密码</label>
-                <input type="password" class="form-input" name="confirmPassword" placeholder="再次输入密码" required>
+                <label class="form-label" for="regConfirmPassword">确认密码</label>
+                <input type="password" class="form-input" name="confirmPassword" id="regConfirmPassword" placeholder="再次输入密码" required autocomplete="new-password">
             </div>
             <button type="submit" class="btn-primary btn-full">注册</button>
             <p class="text-center mt-4">

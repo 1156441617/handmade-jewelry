@@ -22,6 +22,7 @@ const getProducts = async (req, res) => {
     if (error) {
       return res.status(400).json({
         success: false,
+        errorCode: 'PRODUCT_VALIDATION_ERROR',
         message: error.details[0].message,
       });
     }
@@ -86,7 +87,7 @@ const getProducts = async (req, res) => {
     }
 
     // 检查缓存
-    const cacheKey = `products:${JSON.stringify(value)}`;
+    const cacheKey = `products:${JSON.stringify(value, Object.keys(value).sort())}`;
     const cached = await cache.get(cacheKey);
     if (cached) {
       return res.json(cached);
@@ -138,6 +139,7 @@ const getProducts = async (req, res) => {
     console.error('Get products error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_LIST_FAILED',
       message: '获取商品列表失败',
     });
   }
@@ -173,6 +175,7 @@ const getProductById = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
+        errorCode: 'PRODUCT_NOT_FOUND',
         message: '商品不存在',
       });
     }
@@ -216,6 +219,7 @@ const getProductById = async (req, res) => {
     console.error('Get product detail error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_DETAIL_FAILED',
       message: '获取商品详情失败',
     });
   }
@@ -235,6 +239,7 @@ const createProduct = async (req, res) => {
     if (!sku || !name || !category_id || !price || !main_image_url) {
       return res.status(400).json({
         success: false,
+        errorCode: 'PRODUCT_MISSING_FIELDS',
         message: '缺少必填字段',
       });
     }
@@ -248,6 +253,7 @@ const createProduct = async (req, res) => {
     if (existingSku.rows.length > 0) {
       return res.status(409).json({
         success: false,
+        errorCode: 'PRODUCT_SKU_EXISTS',
         message: 'SKU已存在',
       });
     }
@@ -270,7 +276,7 @@ const createProduct = async (req, res) => {
         price, original_price, cost_price, stock_quantity || 0, material, color, size,
         weight_grams, dimensions, main_image_url, image_urls || [], video_url,
         meta_title, meta_description, meta_keywords || [], tags || [], features,
-        'draft', req.user.id
+        'active', req.user.id
       ]
     );
 
@@ -286,6 +292,7 @@ const createProduct = async (req, res) => {
     console.error('Create product error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_CREATE_FAILED',
       message: '创建商品失败',
     });
   }
@@ -306,6 +313,7 @@ const updateProduct = async (req, res) => {
     if (existing.rows.length === 0) {
       return res.status(404).json({
         success: false,
+        errorCode: 'PRODUCT_NOT_FOUND',
         message: '商品不存在',
       });
     }
@@ -335,6 +343,7 @@ const updateProduct = async (req, res) => {
     if (updateFields.length === 0) {
       return res.status(400).json({
         success: false,
+        errorCode: 'PRODUCT_NO_UPDATE_FIELDS',
         message: '没有要更新的字段',
       });
     }
@@ -360,6 +369,7 @@ const updateProduct = async (req, res) => {
     console.error('Update product error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_UPDATE_FAILED',
       message: '更新商品失败',
     });
   }
@@ -381,6 +391,7 @@ const deleteProduct = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
+        errorCode: 'PRODUCT_NOT_FOUND',
         message: '商品不存在',
       });
     }
@@ -397,6 +408,7 @@ const deleteProduct = async (req, res) => {
     console.error('Delete product error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_DELETE_FAILED',
       message: '删除商品失败',
     });
   }
@@ -432,6 +444,7 @@ const getCategories = async (req, res) => {
     console.error('Get categories error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_CATEGORIES_FAILED',
       message: '获取分类失败',
     });
   }
@@ -452,6 +465,7 @@ const addToFavorites = async (req, res) => {
     if (product.rows.length === 0) {
       return res.status(404).json({
         success: false,
+        errorCode: 'PRODUCT_NOT_FOUND',
         message: '商品不存在或已下架',
       });
     }
@@ -478,6 +492,7 @@ const addToFavorites = async (req, res) => {
     console.error('Add to favorites error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_FAVORITE_ADD_FAILED',
       message: '收藏失败',
     });
   }
@@ -497,6 +512,7 @@ const removeFromFavorites = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
+        errorCode: 'PRODUCT_FAVORITE_NOT_FOUND',
         message: '收藏不存在',
       });
     }
@@ -515,6 +531,7 @@ const removeFromFavorites = async (req, res) => {
     console.error('Remove from favorites error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_FAVORITE_REMOVE_FAILED',
       message: '操作失败',
     });
   }
@@ -561,15 +578,104 @@ const getFavorites = async (req, res) => {
     console.error('Get favorites error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PRODUCT_FAVORITES_LIST_FAILED',
       message: '获取收藏列表失败',
     });
   }
 };
 
+// 卖家中心发布商品(免认证，自动转换数据格式)
+const createProductFromSeller = async (req, res) => {
+  try {
+    const productData = req.body;
+
+    // 将卖家中心的数据格式转换为后端期望的格式
+    const categorySlugToId = {
+      'rings': '1',
+      'earrings': '2',
+      'necklaces': '3',
+      'bracelets': '4',
+      'gift-sets': '5',
+    };
+
+    const sku = productData.sku || `SKU-${Date.now()}`;
+    const name = productData.name;
+    const category_id = categorySlugToId[productData.category] || productData.category || '1';
+    const price = parseFloat(productData.price) || 0;
+    const main_image_url = productData.image || (productData.images && productData.images[0]) || '';
+    const original_price = productData.originalPrice ? parseFloat(productData.originalPrice) : null;
+    const description = productData.description || '';
+    const stock_quantity = parseInt(productData.stock) || 0;
+    const material = productData.material || '';
+    const image_urls = productData.images || [];
+    const tags = productData.tags || [];
+
+    // 验证必填字段
+    if (!name || !price) {
+      return res.status(400).json({
+        success: false,
+        errorCode: 'PRODUCT_MISSING_FIELDS',
+        message: '缺少必填字段(名称、价格)',
+      });
+    }
+
+    // 检查SKU是否已存在
+    const existingSku = await query(
+      'SELECT id FROM products WHERE sku = $1 AND deleted_at IS NULL',
+      [sku]
+    );
+
+    if (existingSku.rows.length > 0) {
+      // SKU已存在，生成新的
+      const newSku = `${sku}-${Date.now()}`;
+      return await insertSellerProduct(newSku, name, category_id, price, original_price, description, stock_quantity, material, main_image_url, image_urls, tags, res);
+    }
+
+    return await insertSellerProduct(sku, name, category_id, price, original_price, description, stock_quantity, material, main_image_url, image_urls, tags, res);
+  } catch (error) {
+    console.error('Create product from seller error:', error);
+    res.status(500).json({
+      success: false,
+      errorCode: 'PRODUCT_CREATE_FAILED',
+      message: '创建商品失败',
+    });
+  }
+};
+
+async function insertSellerProduct(sku, name, category_id, price, original_price, description, stock_quantity, material, main_image_url, image_urls, tags, res) {
+  const productSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+  const result = await query(
+    `INSERT INTO products (
+      sku, name, slug, description, category_id,
+      price, original_price, stock_quantity, material,
+      main_image_url, image_urls, tags,
+      status, created_by
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    RETURNING *`,
+    [
+      sku, name, productSlug, description, category_id,
+      price, original_price, stock_quantity, material,
+      main_image_url, image_urls, tags,
+      'active', 'seller-center'
+    ]
+  );
+
+  // 清除商品列表缓存
+  await cache.delPattern('products:*');
+
+  res.status(201).json({
+    success: true,
+    message: '商品发布成功',
+    data: result.rows[0],
+  });
+}
+
 module.exports = {
   getProducts,
   getProductById,
   createProduct,
+  createProductFromSeller,
   updateProduct,
   deleteProduct,
   getCategories,

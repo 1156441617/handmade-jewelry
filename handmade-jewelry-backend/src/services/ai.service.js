@@ -425,16 +425,16 @@ class AIRecommendationEngine {
        JOIN orders o ON oi.order_id = o.id
        WHERE p.status = 'active'
          AND p.deleted_at IS NULL
-         AND o.created_at >= NOW() - INTERVAL '${days} days'
+         AND o.created_at >= NOW() - INTERVAL '1 day' * $2
          AND o.status IN ('delivered', 'shipped', 'processing')
        GROUP BY p.id
        ORDER BY total_sold DESC, order_count DESC
        LIMIT $1`,
-      [limit]
+      [limit, days]
     );
 
     const recommendations = result.rows;
-    await cache.set(cacheKey, recommendations, 1800); // 缓存30分钟
+    await cache.set(cacheKey, recommendations, 1800);
 
     return recommendations;
   }

@@ -14,6 +14,7 @@ const syncProduct = async (req, res) => {
     if (!platform || !['douyin', 'xiaohongshu', 'taobao'].includes(platform)) {
       return res.status(400).json({
         success: false,
+        errorCode: 'PLATFORM_INVALID_PLATFORM',
         message: '请指定有效的平台(douyin/xiaohongshu/taobao)',
       });
     }
@@ -25,6 +26,7 @@ const syncProduct = async (req, res) => {
     console.error('Sync product error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_SYNC_FAILED',
       message: error.message,
     });
   }
@@ -47,6 +49,7 @@ const syncToAllPlatforms = async (req, res) => {
     console.error('Sync to all platforms error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_SYNC_ALL_FAILED',
       message: error.message,
     });
   }
@@ -67,6 +70,7 @@ const updatePlatformProduct = async (req, res) => {
     console.error('Update platform product error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_UPDATE_FAILED',
       message: error.message,
     });
   }
@@ -86,6 +90,7 @@ const deletePlatformProduct = async (req, res) => {
     console.error('Delete platform product error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_DELETE_FAILED',
       message: error.message,
     });
   }
@@ -105,6 +110,7 @@ const getSyncStatus = async (req, res) => {
     console.error('Get sync status error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_STATUS_FAILED',
       message: error.message,
     });
   }
@@ -120,6 +126,7 @@ const getPendingSyncProducts = async (req, res) => {
     if (!platform) {
       return res.status(400).json({
         success: false,
+        errorCode: 'PLATFORM_PLATFORM_REQUIRED',
         message: '请指定平台',
       });
     }
@@ -135,6 +142,7 @@ const getPendingSyncProducts = async (req, res) => {
     console.error('Get pending sync products error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_PENDING_FAILED',
       message: error.message,
     });
   }
@@ -155,6 +163,7 @@ const triggerAutoSync = async (req, res) => {
     console.error('Trigger auto sync error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_AUTO_SYNC_FAILED',
       message: error.message,
     });
   }
@@ -211,6 +220,7 @@ const configurePlatform = async (req, res) => {
     console.error('Configure platform error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_CONFIGURE_FAILED',
       message: error.message,
     });
   }
@@ -236,6 +246,7 @@ const getPlatformConfigs = async (req, res) => {
     console.error('Get platform configs error:', error);
     res.status(500).json({
       success: false,
+      errorCode: 'PLATFORM_CONFIGS_FAILED',
       message: error.message,
     });
   }

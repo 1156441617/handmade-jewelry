@@ -67,8 +67,17 @@ function bindEvents() {
     
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
+        let searchDebounceTimer = null;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchDebounceTimer);
+            const value = this.value;
+            searchDebounceTimer = setTimeout(() => searchProducts(value), 300);
+        });
         searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchProducts(this.value);
+            if (e.key === 'Enter') {
+                clearTimeout(searchDebounceTimer);
+                searchProducts(this.value);
+            }
         });
     }
     
@@ -146,6 +155,7 @@ function getCategoryIcon(slug) {
 // 加载商品
 // ============================================
 let allProducts = [];
+let productsShownCount = 0;
 
 async function loadProducts(filter = 'all') {
     const productGrid = document.getElementById('productGrid');
@@ -176,7 +186,7 @@ async function loadProducts(filter = 'all') {
     }
     
     productGrid.innerHTML = products.map(product => createProductCard(product)).join('');
-    bindAddToCartEvents();
+    productsShownCount = products.length;
 }
 
 function mapApiProduct(p) {
@@ -274,13 +284,21 @@ function loadMoreProducts() {
     const productGrid = document.getElementById('productGrid');
     if (!productGrid) return;
     
-    const moreProducts = allProducts.slice(0, 4).map(p => ({ ...p, id: p.id + '_more' }));
-    moreProducts.forEach(product => {
+    const batchSize = 4;
+    const nextBatch = allProducts.slice(productsShownCount, productsShownCount + batchSize);
+    
+    if (nextBatch.length === 0) {
+        showNotification('没有更多商品了');
+        return;
+    }
+    
+    nextBatch.forEach(product => {
         const div = document.createElement('div');
         div.innerHTML = createProductCard(product);
         productGrid.appendChild(div.firstElementChild);
     });
-    bindAddToCartEvents();
+    
+    productsShownCount += nextBatch.length;
 }
 
 // ============================================
@@ -308,13 +326,7 @@ async function searchProducts(keyword) {
     }
     
     productGrid.innerHTML = filtered.map(product => createProductCard(product)).join('');
-    bindAddToCartEvents();
 }
-
-// ============================================
-// 绑定添加到购物车事件
-// ============================================
-function bindAddToCartEvents() {}
 
 // ============================================
 // AI智能推荐

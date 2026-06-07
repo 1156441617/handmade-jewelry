@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>匠心手作 | 卖家中心</title>
+  <meta name="description" content="匠心手作卖家中心 - 手工珠宝电商发布管理平台">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">跳转到主要内容</a>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="/" class="logo" aria-label="匠心手作 卖家中心 首页">
+          <svg class="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M16 6 L20 14 L16 12 L12 14 Z" fill="currentColor" opacity="0.8"/>
+            <path d="M10 18 L16 14 L22 18 L16 26 Z" fill="currentColor" opacity="0.5"/>
+          </svg>
+          <span class="logo-text">匠心手作 <span class="logo-sep">|</span> 卖家中心</span>
+        </a>
+      </div>
+      <nav class="header-nav" role="navigation" aria-label="主导航">
+        <ul class="nav-list">
+          <li><a href="#upload-section" class="nav-link active" aria-current="page">发布商品</a></li>
+          <li><a href="#product-list-section" class="nav-link">我的商品</a></li>
+          <li><a href="#version-section" class="nav-link">版本历史</a></li>
+        </ul>
+      </nav>
+      <div class="header-right">
+        <span class="ai-model-badge local" id="aiModelBadge" title="AI模型状态">AI: 检测中...</span>
+        <div class="env-status" id="envStatus" aria-label="环境状态" role="status">
+          <span class="env-dot" id="envDot"></span>
+          <span class="env-text" id="envText">检测中...</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Main Content ===== -->
+  <main id="main-content" class="main-content">
+
+    <!-- Upload Zone -->
+    <section id="upload-section" class="section upload-section" aria-labelledby="upload-heading">
+      <h2 id="upload-heading" class="section-heading">
+        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        上传商品图片
+      </h2>
+      <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
+           aria-label="拖拽或点击上传商品图片，支持多张">
+        <input type="file" id="fileInput" multiple accept="image/*" class="sr-only"
+               aria-label="选择图片文件">
+        <div class="upload-zone-content">
+          <svg class="upload-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <p class="upload-text">拖拽图片到此处，或<span class="upload-cta">点击选择文件</span></p>
+          <p class="upload-hint">支持 JPG、PNG、WebP，最多 8 张</p>
+        </div>
+      </div>
+      <div class="preview-grid" id="previewGrid" aria-label="图片预览" role="list"></div>
+    </section>
+
+    <!-- AI Analysis Panel -->
+    <section id="ai-section" class="section ai-section" aria-labelledby="ai-heading" hidden>
+      <h2 id="ai-heading" class="section-heading">
+        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        AI 智能分析
+        <span class="confidence-badge" id="confidenceBadge" aria-label="置信度"></span>
+      </h2>
+
+      <div class="ai-form" id="aiForm">
+        <!-- Product Name -->
+        <div class="form-group">
+          <label for="productName" class="form-label">商品名称</label>
+          <div class="input-wrapper ai-field">
+            <input type="text" id="productName" class="form-input" placeholder="AI 将自动生成商品名称"
+                   aria-describedby="productNameHint">
+            <span class="ai-badge" aria-label="AI 生成">AI</span>
+          </div>
+          <span id="productNameHint" class="form-hint">可编辑 AI 生成的名称</span>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label for="category" class="form-label">商品分类</label>
+          <div class="input-wrapper ai-field">
+            <select id="category" class="form-select" aria-describedby="categoryHint">
+              <option value="">请选择分类</option>
+              <option value="necklaces">项链</option>
+              <option value="rings">戒指</option>
+              <option value="earrings">耳饰</option>
+              <option value="bracelets">手链/手镯</option>
+              <option value="brooch">胸针</option>
+              <option value="pendants">吊坠</option>
+              <option value="anklets">脚链</option>
+              <option value="hair-accessory">发饰</option>
+              <option value="accessories">配饰</option>
+              <option value="other">其他</option>
+            </select>
+            <span class="ai-badge" aria-label="AI 推荐">AI</span>
+          </div>
+          <span id="categoryHint" class="form-hint">AI 根据图片自动推荐分类</span>
+        </div>
+
+        <!-- Material -->
+        <div class="form-group">
+          <label for="material" class="form-label">材质</label>
+          <div class="input-wrapper ai-field">
+            <input type="text" id="material" class="form-input" placeholder="如：925纯银、天然珍珠"
+                   aria-describedby="materialHint">
+            <span class="ai-badge" aria-label="AI 识别">AI</span>
+          </div>
+          <span id="materialHint" class="form-hint">AI 识别图片中的材质</span>
+        </div>
+
+        <!-- Price Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price" class="form-label">售价 (¥)</label>
+            <div class="input-wrapper ai-field">
+              <input type="number" id="price" class="form-input" min="0" step="0.01"
+                     placeholder="0.00" aria-describedby="priceHint">
+              <span class="ai-badge" aria-label="AI 建议">AI</span>
+            </div>
+            <span id="priceHint" class="form-hint">AI 根据市场分析建议售价</span>
+          </div>
+          <div class="form-group">
+            <label for="originalPrice" class="form-label">原价 (¥)</label>
+            <div class="input-wrapper ai-field">
+              <input type="number" id="originalPrice" class="form-input" min="0" step="0.01"
+                     placeholder="0.00" aria-describedby="originalPriceHint">
+              <span class="ai-badge" aria-label="AI 建议">AI</span>
+            </div>
+            <span id="originalPriceHint" class="form-hint">划线价，用于展示折扣</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label for="description" class="form-label">商品描述</label>
+          <div class="input-wrapper ai-field ai-field-textarea">
+            <textarea id="description" class="form-textarea" rows="4"
+                      placeholder="AI 将自动生成商品描述" aria-describedby="descHint"></textarea>
+            <span class="ai-badge" aria-label="AI 生成">AI</span>
+          </div>
+          <span id="descHint" class="form-hint">可编辑 AI 生成的描述文案</span>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label for="tagInput" class="form-label">标签</label>
+          <div class="tags-container" id="tagsContainer" role="list" aria-label="商品标签">
+            <!-- Tags will be inserted here -->
+          </div>
+          <div class="tag-input-wrapper">
+            <input type="text" id="tagInput" class="form-input tag-input"
+                   placeholder="输入标签后按回车添加" aria-label="添加标签">
+          </div>
+          <span class="form-hint">AI 推荐标签，可添加或删除</span>
+        </div>
+
+        <!-- Stock -->
+        <div class="form-group">
+          <label for="stock" class="form-label">库存数量</label>
+          <input type="number" id="stock" class="form-input" min="0" value="1"
+                 aria-label="库存数量">
+        </div>
+      </div>
+
+      <!-- One-Click Publish -->
+      <div class="publish-area">
+        <button id="publishBtn" class="btn-publish" aria-label="一键发布商品"
+                disabled>
+          <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/>
+            <path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>
+            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+          </svg>
+          一键发布
+        </button>
+        <p class="publish-hint">发布后将自动触发部署流水线</p>
+      </div>
+    </section>
+
+    <!-- Product List -->
+    <section id="product-list-section" class="section product-list-section" aria-labelledby="product-list-heading">
+      <h2 id="product-list-heading" class="section-heading">
+        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        我的商品
+      </h2>
+      <div class="product-grid" id="productGrid" role="list" aria-label="已发布商品列表">
+        <div class="empty-state" id="productEmpty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          <p>暂无已发布商品</p>
+          <p class="empty-hint">上传图片开始发布你的第一件手作</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Version History -->
+    <section id="version-section" class="section version-section" aria-labelledby="version-heading">
+      <h2 id="version-heading" class="section-heading">
+        <svg class="section-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        版本历史
+      </h2>
+      <div class="version-timeline" id="versionTimeline" role="list" aria-label="版本历史时间线">
+        <div class="empty-state" id="versionEmpty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <p>暂无版本记录</p>
+          <p class="empty-hint">发布商品后将自动记录版本</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Deploy Pipeline Modal ===== -->
+  <div class="modal-overlay" id="deployModal" role="dialog" aria-modal="true"
+       aria-labelledby="deployModalTitle" hidden>
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3 id="deployModalTitle" class="modal-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/>
+            <path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/>
+          </svg>
+          部署流水线
+        </h3>
+        <button class="modal-close" id="modalClose" aria-label="关闭弹窗">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="pipeline" id="pipeline" role="list" aria-label="部署步骤">
+          <div class="pipeline-step" data-step="1" role="listitem">
+            <div class="step-indicator">
+              <svg class="step-icon icon-pending" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+              <svg class="step-icon icon-running" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              <svg class="step-icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              <svg class="step-icon icon-failed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </div>
+            <div class="step-content">
+              <span class="step-name">数据验证</span>
+              <span class="step-status">等待中</span>
+            </div>
+          </div>
+          <div class="pipeline-step" data-step="2" role="listitem">
+            <div class="step-indicator">
+              <svg class="step-icon icon-pending" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+              <svg class="step-icon icon-running" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              <svg class="step-icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              <svg class="step-icon icon-failed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </div>
+            <div class="step-content">
+              <span class="step-name">自动打包</span>
+              <span class="step-status">等待中</span>
+            </div>
+          </div>
+          <div class="pipeline-step" data-step="3" role="listitem">
+            <div class="step-indicator">
+              <svg class="step-icon icon-pending" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+              <svg class="step-icon icon-running" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              <svg class="step-icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              <svg class="step-icon icon-failed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </div>
+            <div class="step-content">
+              <span class="step-name">版本控制</span>
+              <span class="step-status">等待中</span>
+            </div>
+          </div>
+          <div class="pipeline-step" data-step="4" role="listitem">
+            <div class="step-indicator">
+              <svg class="step-icon icon-pending" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+              <svg class="step-icon icon-running" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              <svg class="step-icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              <svg class="step-icon icon-failed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </div>
+            <div class="step-content">
+              <span class="step-name">环境检测</span>
+              <span class="step-status">等待中</span>
+            </div>
+          </div>
+          <div class="pipeline-step" data-step="5" role="listitem">
+            <div class="step-indicator">
+              <svg class="step-icon icon-pending" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+              <svg class="step-icon icon-running" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              <svg class="step-icon icon-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+              <svg class="step-icon icon-failed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </div>
+            <div class="step-content">
+              <span class="step-name">部署确认</span>
+              <span class="step-status">等待中</span>
+            </div>
+          </div>
+        </div>
+        <div class="pipeline-result" id="pipelineResult" hidden>
+          <div class="result-success" id="resultSuccess" hidden>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 12l3 3 5-5"/>
+            </svg>
+            <p class="result-text">发布成功！</p>
+            <p class="result-sub">商品已上线，可在"我的商品"中查看</p>
+          </div>
+          <div class="result-failed" id="resultFailed" hidden>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <p class="result-text">发布失败</p>
+            <p class="result-sub" id="resultErrorMsg">请检查数据后重试</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Celebrate Canvas ===== -->
+  <canvas id="celebrateCanvas" aria-hidden="true"></canvas>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
